@@ -1,1 +1,91 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --app-bg: #f5f6f4;
+  --app-surface: #ffffff;
+  --app-surface-raised: #ffffff;
+  --app-line: #e4e7e2;
+  --app-ink: #14171c;
+  --app-ink-muted: #5f5e5a;
+  --app-ink-faint: #8a8d93;
+  --app-brass: #b9863a;
+  --app-brass-bg: #fbf3e5;
+  --app-brass-ink: #8a611f;
+  --app-teal: #0f7b6c;
+  --app-bull: #1e8e63;
+  --app-bull-bg: #e8f4ee;
+  --app-bear: #d64545;
+  --app-bear-bg: #fbecec;
+  --app-hold: #b98a2e;
+  --app-hold-bg: #fbf3e5;
+}
+
+.dark {
+  --app-bg: #17181c;
+  --app-surface: #1e2024;
+  --app-surface-raised: #24262b;
+  --app-line: #2a2c31;
+  --app-ink: #f0f1ef;
+  --app-ink-muted: #8a8d93;
+  --app-ink-faint: #6b6e74;
+  --app-brass: #d9a44e;
+  --app-brass-bg: #211c14;
+  --app-brass-ink: #e5bb75;
+  --app-teal: #2fa894;
+  --app-bull: #3aae7e;
+  --app-bull-bg: #16281f;
+  --app-bear: #e1584a;
+  --app-bear-bg: #2b1917;
+  --app-hold: #d2a542;
+  --app-hold-bg: #211c14;
+}
+
+@theme inline {
+  --color-bg: var(--app-bg);
+  --color-surface: var(--app-surface);
+  --color-surface-raised: var(--app-surface-raised);
+  --color-line: var(--app-line);
+  --color-ink: var(--app-ink);
+  --color-ink-muted: var(--app-ink-muted);
+  --color-ink-faint: var(--app-ink-faint);
+  --color-brass: var(--app-brass);
+  --color-brass-bg: var(--app-brass-bg);
+  --color-brass-ink: var(--app-brass-ink);
+  --color-teal: var(--app-teal);
+  --color-bull: var(--app-bull);
+  --color-bull-bg: var(--app-bull-bg);
+  --color-bear: var(--app-bear);
+  --color-bear-bg: var(--app-bear-bg);
+  --color-hold: var(--app-hold);
+  --color-hold-bg: var(--app-hold-bg);
+
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+
+  --radius-card: 12px;
+  --radius-badge: 8px;
+  --radius-pill: 20px;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 500;
+  }
+}
