@@ -9,8 +9,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: "bg-teal text-white hover:opacity-90",
-        secondary: "border border-line bg-surface text-ink hover:bg-surface-raised",
-        ghost: "text-ink-muted hover:bg-surface hover:text-ink",
+        secondary: "border border-line bg-surface text-ink hover:bg-surface-hover",
+        ghost: "text-ink-muted hover:bg-surface-hover hover:text-ink",
         signal: "bg-brass text-white hover:opacity-90",
         destructive: "bg-bear text-white hover:opacity-90",
       },

@@ -6,6 +6,7 @@
   --app-bg: #f5f6f4;
   --app-surface: #ffffff;
   --app-surface-raised: #ffffff;
+  --app-surface-hover: #ecefe9;
   --app-line: #e4e7e2;
   --app-ink: #14171c;
   --app-ink-muted: #5f5e5a;
@@ -26,6 +27,7 @@
   --app-bg: #17181c;
   --app-surface: #1e2024;
   --app-surface-raised: #24262b;
+  --app-surface-hover: #2a2c31;
   --app-line: #2a2c31;
   --app-ink: #f0f1ef;
   --app-ink-muted: #8a8d93;
@@ -46,6 +48,7 @@
   --color-bg: var(--app-bg);
   --color-surface: var(--app-surface);
   --color-surface-raised: var(--app-surface-raised);
+  --color-surface-hover: var(--app-surface-hover);
   --color-line: var(--app-line);
   --color-ink: var(--app-ink);
   --color-ink-muted: var(--app-ink-muted);
