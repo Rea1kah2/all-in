@@ -16,5 +16,8 @@
   "packageManager": "pnpm@11.12.0",
   "engines": {
     "node": ">=24.0.0"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": ["@parcel/watcher", "@swc/core"]
   }
 }

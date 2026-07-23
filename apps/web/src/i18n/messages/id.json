@@ -1,0 +1,310 @@
+{
+  "language": {
+    "label": "Bahasa",
+    "id": "Indonesia",
+    "en": "English",
+    "toggle": "Ganti bahasa"
+  },
+  "userMenu": {
+    "open": "Buka menu akun",
+    "profile": "Profil investasi",
+    "settings": "Pengaturan",
+    "logout": "Keluar"
+  },
+  "nav": {
+    "home": { "label": "Home", "short": "Home" },
+    "analysis": { "label": "AI Analysis", "short": "Analisis" },
+    "companies": { "label": "Company Explorer", "short": "Jelajah" },
+    "watchlist": { "label": "Watchlist", "short": "Watchlist" },
+    "learn": { "label": "Learn", "short": "Learn" }
+  },
+  "app": {
+    "sidebarNote": "Analisis AI membantu Anda berpikir lebih jernih. Keputusan akhir tetap di tangan Anda.",
+    "toggleSidebar": "Buka atau tutup sidebar"
+  },
+  "market": {
+    "open": "Pasar Buka",
+    "pre": "Pra Pembukaan",
+    "after": "Pasca Penutupan",
+    "closed": "Pasar Tutup"
+  },
+  "verdict": {
+    "notAnalyzed": "Belum dianalisis",
+    "BUY": {
+      "label": "Beli",
+      "description": "Kondisi mendukung pembelian dengan pertimbangan biasa"
+    },
+    "HOLD": {
+      "label": "Tahan",
+      "description": "Sinyal campuran, tidak ada dorongan kuat untuk bergerak"
+    },
+    "SELL": {
+      "label": "Jual",
+      "description": "Kondisi menunjukkan risiko lebih besar daripada peluang"
+    }
+  },
+  "home": {
+    "title": "Home",
+    "subtitle": "Denyut pasar hari ini, saham yang bergerak, berita, dan watchlist Anda.",
+    "marketSummary": "Ringkasan pasar",
+    "marketError": "Data pasar gagal dimuat, coba lagi",
+    "gainers": "Top gainers",
+    "losers": "Top losers",
+    "news": "Berita terkini",
+    "newsError": "Berita gagal dimuat, coba lagi",
+    "watchlist": "Watchlist",
+    "seeAll": "Lihat semua",
+    "watchlistError": "Watchlist gagal dimuat, coba lagi",
+    "watchlistEmpty": "Belum ada saham yang dipantau. Simpan dari halaman perusahaan."
+  },
+  "companies": {
+    "title": "Company Explorer",
+    "subtitle": "Cari perusahaan berdasarkan ticker atau nama. Misalnya, ketik AAPL untuk Apple Inc.",
+    "searchLabel": "Cari ticker atau nama perusahaan",
+    "searchPlaceholder": "Ketik ticker atau nama perusahaan",
+    "popular": "Populer sekarang",
+    "notFound": "Saham {ticker} tidak ditemukan",
+    "notFoundHint": "Periksa kembali kode ticker, atau cari dari daftar populer.",
+    "tabs": {
+      "overview": "Ringkasan",
+      "fundamental": "Fundamental",
+      "chart": "Grafik",
+      "news": "Berita"
+    },
+    "ctaTitle": "Siap menggali lebih dalam?",
+    "ctaBody": "Tiga AI Agent akan menganalisis fundamental, teknikal, dan sentimen untuk {ticker}.",
+    "ctaButton": "Analisis saham ini",
+    "fundamentalNote": "Metrik lengkap dan tren tahun ke tahun akan hadir di iterasi berikutnya.",
+    "chartError": "Grafik untuk {ticker} gagal dimuat, coba lagi",
+    "newsEmpty": "Berita belum tersedia",
+    "newsHint": "Feed berita untuk {ticker} akan hadir setelah endpoint news siap",
+    "metrics": {
+      "peLabel": "P/E Ratio",
+      "peHint": "Berapa kali laba tahunan yang dibayar untuk satu saham",
+      "roeLabel": "ROE",
+      "roeHint": "Seberapa efisien perusahaan memakai modal pemegang saham",
+      "deLabel": "D/E Ratio",
+      "deHint": "Perbandingan utang terhadap ekuitas, ukuran leverage",
+      "dividendLabel": "Dividend Yield",
+      "dividendHint": "Imbal hasil dividen tahunan relatif terhadap harga"
+    }
+  },
+  "analysis": {
+    "title": "AI Analysis",
+    "subtitle": "Empat langkah pemikiran, satu kesimpulan yang diuji.",
+    "tickerLabel": "Ticker",
+    "tickerPlaceholder": "Misalnya AAPL",
+    "riskLabel": "Profil risiko",
+    "risk": {
+      "Conservative": "Konservatif",
+      "Moderate": "Moderat",
+      "Aggressive": "Agresif"
+    },
+    "goalLabel": "Tujuan investasi",
+    "goal": {
+      "Short Term": "Jangka pendek",
+      "Long Term": "Jangka panjang"
+    },
+    "submit": "Mulai analisis",
+    "submitting": "Menganalisis",
+    "failed": "Analisis gagal, coba lagi",
+    "loadingTitle": "Menganalisis {ticker}",
+    "loadingBody": "Data Collector mengumpulkan data, tiga AI Agent akan menilai dan menyimpulkan",
+    "confidence": "Keyakinan",
+    "trailTitle": "Cara berpikir",
+    "trail": {
+      "collectorTitle": "Data Collector",
+      "collectorRole": "Bukan AI, mengumpulkan data pasar dan berita",
+      "collectorOutput": "Data terkumpul dari Yahoo Finance dan Google News",
+      "agent1Title": "AI Agent 1, Fundamental dan Technical",
+      "agent1Role": "Menilai kesehatan bisnis dan struktur harga",
+      "agent1Output": "Fundamental {fundamental}, Technical {technical}",
+      "agent2Title": "AI Agent 2, Risk dan Sentiment",
+      "agent2Role": "Menimbang volatilitas dan sentimen pasar",
+      "agent2Output": "Risk score {risk}",
+      "agent3Title": "AI Agent 3, Decision",
+      "agent3Role": "Mengonsolidasi jadi rekomendasi akhir",
+      "agent3Output": "Rekomendasi {recommendation}, keyakinan {confidence}%"
+    },
+    "scores": {
+      "fundamentalLabel": "Fundamental",
+      "fundamentalHint": "Kesehatan bisnis dan valuasi",
+      "technicalLabel": "Technical",
+      "technicalHint": "Struktur harga dan momentum",
+      "riskLabel": "Risk",
+      "riskHint": "Kesesuaian dengan profil risiko"
+    },
+    "reasons": "Alasan utama",
+    "analyzeAnother": "Analisis saham lain",
+    "save": "Simpan ke Watchlist",
+    "saved": "Tersimpan ke Watchlist",
+    "saveError": "Gagal menyimpan ke watchlist, coba lagi",
+    "disclaimer": "Analisis ini membantu Anda berpikir lebih jernih. Keputusan investasi akhir tetap milik Anda, dan Stock AI bukan penasihat investasi berlisensi."
+  },
+  "auth": {
+    "loginTitle": "Masuk",
+    "loginSubtitle": "Lanjutkan analisis yang sudah Anda mulai.",
+    "registerTitle": "Coba gratis",
+    "registerSubtitle": "Buat akun untuk mulai menganalisis saham.",
+    "name": "Nama",
+    "namePlaceholder": "Nama lengkap Anda",
+    "email": "Email",
+    "emailPlaceholder": "anda@email.com",
+    "password": "Kata sandi",
+    "passwordConfirm": "Konfirmasi kata sandi",
+    "processing": "Memproses",
+    "submitLogin": "Masuk",
+    "submitRegister": "Daftar",
+    "noAccount": "Belum punya akun?",
+    "haveAccount": "Sudah punya akun?",
+    "toRegister": "Coba gratis",
+    "toLogin": "Masuk"
+  },
+  "showcase": {
+    "title": "Design token dan primitive",
+    "subtitle": "Verifikasi palet, tipografi, Button, Badge, dan katalog ikon",
+    "iconCatalog": "Katalog ikon",
+    "iconsInButton": "Ikon dalam Button",
+    "iconsInBadge": "Ikon dalam Badge",
+    "iconSizes": "Ukuran ikon",
+    "addWatchlist": "Tambah watchlist",
+    "analyzeWithAi": "Analisis dengan AI",
+    "viewDetail": "Lihat detail",
+    "remove": "Hapus",
+    "reanalyze": "Analisis ulang",
+    "aiSignal": "Sinyal AI",
+    "analyzed": "Sudah dianalisis"
+  },
+  "theme": {
+    "toLight": "Aktifkan mode terang",
+    "toDark": "Aktifkan mode gelap"
+  },
+  "meta": {
+    "description": "Analisis saham bertenaga AI dengan penalaran transparan, dari fundamental sampai Smart Money Concept."
+  },
+  "learn": {
+    "title": "Learn",
+    "subtitle": "Pahami istilah di balik analisis, dari fundamental sampai Smart Money Concept.",
+    "categories": "Kategori",
+    "glossary": "Glosarium istilah",
+    "searchPlaceholder": "Cari istilah, misalnya order block atau ROE",
+    "noResults": "Tidak ada istilah yang cocok dengan pencarian Anda.",
+    "termsInCategory": "Istilah di kategori ini",
+    "backToCategories": "Kembali ke semua kategori",
+    "learnMoreIn": "Pelajari di {category}"
+  },
+  "landing": {
+    "badge": "Analisis multi agent",
+    "heroTitle": "Analisis saham yang menunjukkan cara berpikirnya",
+    "heroBody": "Tiga AI Agent menganalisis fundamental, struktur harga, dan sentimen pasar. Anda melihat seluruh alur penalarannya, bukan sekadar kesimpulan akhirnya.",
+    "ctaPrimary": "Coba gratis",
+    "ctaSecondary": "Lihat cara kerjanya",
+    "heroNote": "Kami bukan penasihat investasi. Analisis di sini membantu Anda berpikir lebih jernih, keputusan akhir tetap milik Anda.",
+    "agents": {
+      "collectorName": "Data Collector",
+      "collectorRole": "Mengumpulkan laporan keuangan, harga historis, dan berita terbaru",
+      "agent1Name": "AI Agent 1, Fundamental dan Technical",
+      "agent1Role": "Menilai kesehatan bisnis dan struktur harga dengan kerangka Smart Money Concept",
+      "agent2Name": "AI Agent 2, Risk dan Sentiment",
+      "agent2Role": "Menimbang berita, sentimen pasar, dan volatilitas",
+      "agent3Name": "AI Agent 3, Decision",
+      "agent3Role": "Menyatukan semuanya jadi satu kesimpulan yang bisa Anda uji"
+    },
+    "howTitle": "Tiga langkah, satu kesimpulan yang bisa Anda uji",
+    "step1Title": "Pilih saham",
+    "step1Body": "Cari berdasarkan ticker atau nama perusahaan. Profil bisnis dan angka pentingnya langsung terbuka.",
+    "step2Title": "Jalankan analisis",
+    "step2Body": "Sebutkan horizon dan toleransi risiko Anda. Tiga AI Agent bekerja, penalarannya terbuka langkah demi langkah.",
+    "step3Title": "Uji kesimpulannya",
+    "step3Body": "Telusuri setiap alasan sampai ke data mentahnya. Setuju atau tidak, Anda tahu persis dasar penilaiannya.",
+    "featuresTitle": "Dibangun untuk orang yang ingin paham, bukan sekadar diberi tahu",
+    "features": {
+      "reasoningTitle": "Penalaran yang terbuka",
+      "reasoningBody": "Setiap kesimpulan bisa ditelusuri sampai ke data mentahnya. Anda tidak diminta percaya begitu saja.",
+      "hybridTitle": "Fundamental dan teknikal sekaligus",
+      "hybridBody": "Kesehatan bisnis dan struktur harga dianalisis bersama, bukan dipilih salah satu.",
+      "educationTitle": "Edukasi yang menyatu",
+      "educationBody": "Klik istilah mana pun di hasil analisis, penjelasannya terbuka tanpa perlu berpindah halaman.",
+      "historyTitle": "Rekam jejak yang tersimpan",
+      "historyBody": "Setiap analisis tercatat, jadi Anda bisa menilai sendiri seberapa berguna alat ini bagi Anda."
+    },
+    "modeTitle": "Sedalam yang Anda butuhkan, tidak lebih",
+    "modeBody": "Mulai dari tampilan yang ringkas dan jelas. Saat Anda siap, buka seluruh kedalamannya dengan satu tombol.",
+    "simpleBadge": "Mode Simple",
+    "simpleBody": "Untuk Anda yang baru mulai, atau yang tidak punya waktu membaca dua puluh metrik.",
+    "simpleItems": [
+      "Kesimpulan dalam bahasa sehari hari",
+      "Alasan utama diringkas tiga poin",
+      "Istilah teknis dijelaskan saat diklik",
+      "Grafik bersih tanpa indikator berlapis"
+    ],
+    "proBadge": "Mode Pro",
+    "proBody": "Untuk Anda yang ingin membedah setiap asumsi dan menantang kesimpulannya.",
+    "proItems": [
+      "Seluruh penalaran tiap agent terbuka",
+      "Overlay Smart Money Concept di grafik",
+      "Metrik fundamental lengkap",
+      "Zona likuiditas dan order block"
+    ],
+    "finalTitle": "Berhenti menebak. Mulai menguji.",
+    "finalBody": "Coba analisis pertama Anda hari ini, tanpa kartu kredit.",
+    "finalCta": "Coba gratis"
+  },
+  "marketing": {
+    "login": "Masuk",
+    "register": "Coba gratis",
+    "footerLearn": "Learn",
+    "footerPrivacy": "Privasi",
+    "footerTerms": "Ketentuan",
+    "disclaimer": "{name} adalah alat analitis dan edukasi, bukan penasihat investasi berlisensi. Analisis yang kami sajikan tidak menjamin hasil apa pun. Keputusan investasi sepenuhnya menjadi tanggung jawab Anda.",
+    "nav": {
+      "how": "Cara Kerja",
+      "advantages": "Keunggulan",
+      "audience": "Untuk siapa"
+    }
+  },
+  "settings": {
+    "title": "Pengaturan",
+    "subtitle": "Preferensi akun dan tema akan hadir setelah backend auth siap.",
+    "profileTitle": "Profil Investasi",
+    "profileSubtitle": "Horizon investasi, profil risiko, dan preferensi lainnya akan hadir setelah backend auth siap."
+  },
+  "watchlistStar": {
+    "save": "Simpan",
+    "saved": "Tersimpan"
+  },
+  "watchlist": {
+    "title": "Watchlist",
+    "subtitle": "Saham yang Anda pantau, lengkap dengan status AI dan harga terkini.",
+    "error": "Watchlist gagal dimuat, coba lagi",
+    "emptyTitle": "Watchlist Anda masih kosong",
+    "emptyBody": "Simpan saham dari halaman perusahaan atau dari hasil AI Analysis untuk memantaunya di sini.",
+    "browseCompanies": "Jelajahi perusahaan",
+    "actions": {
+      "reanalyze": "Analisis ulang",
+      "alert": "Atur alert",
+      "detail": "Lihat detail",
+      "remove": "Hapus dari watchlist"
+    }
+  },
+  "confirm": {
+    "cancel": "Batal",
+    "deleteWatchlistTitle": "Hapus dari watchlist?",
+    "deleteWatchlistBody": "{name} akan dihapus dari daftar pantauan Anda.",
+    "deleteConfirm": "Hapus",
+    "logoutTitle": "Keluar dari akun?",
+    "logoutBody": "Anda perlu masuk lagi untuk mengakses analisis dan watchlist.",
+    "logoutConfirm": "Keluar"
+  },
+  "alert": {
+    "title": "Atur alert harga",
+    "description": "Beri tahu saya saat {ticker} mencapai target harga.",
+    "targetPrice": "Harga target",
+    "above": "Naik ke atau di atas",
+    "below": "Turun ke atau di bawah",
+    "save": "Simpan alert",
+    "remove": "Hapus alert",
+    "active": "Alert aktif",
+    "current": "Harga sekarang {price}"
+  }
+}

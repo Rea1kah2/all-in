@@ -2,7 +2,6 @@ export type MarketPhase = "open" | "pre" | "after" | "closed";
 
 export type MarketReading = {
   phase: MarketPhase;
-  label: string;
   timeLabel: string;
 };
 
@@ -34,20 +33,20 @@ export function readMarket(now: Date): MarketReading {
   const timeLabel = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")} ET`;
 
   if (weekday === "Sat" || weekday === "Sun") {
-    return { phase: "closed", label: "Pasar Tutup", timeLabel };
+    return { phase: "closed", timeLabel };
   }
 
   if (minutesOfDay >= REGULAR_START && minutesOfDay < REGULAR_END) {
-    return { phase: "open", label: "Pasar Buka", timeLabel };
+    return { phase: "open", timeLabel };
   }
 
   if (minutesOfDay >= PRE_MARKET_START && minutesOfDay < REGULAR_START) {
-    return { phase: "pre", label: "Pra Pembukaan", timeLabel };
+    return { phase: "pre", timeLabel };
   }
 
   if (minutesOfDay >= REGULAR_END && minutesOfDay < AFTER_MARKET_END) {
-    return { phase: "after", label: "Pasca Penutupan", timeLabel };
+    return { phase: "after", timeLabel };
   }
 
-  return { phase: "closed", label: "Pasar Tutup", timeLabel };
+  return { phase: "closed", timeLabel };
 }

@@ -1,0 +1,310 @@
+{
+  "language": {
+    "label": "Language",
+    "id": "Indonesia",
+    "en": "English",
+    "toggle": "Switch language"
+  },
+  "userMenu": {
+    "open": "Open account menu",
+    "profile": "Investment profile",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "nav": {
+    "home": { "label": "Home", "short": "Home" },
+    "analysis": { "label": "AI Analysis", "short": "Analysis" },
+    "companies": { "label": "Company Explorer", "short": "Explore" },
+    "watchlist": { "label": "Watchlist", "short": "Watchlist" },
+    "learn": { "label": "Learn", "short": "Learn" }
+  },
+  "app": {
+    "sidebarNote": "AI analysis helps you think more clearly. The final decision is always yours.",
+    "toggleSidebar": "Toggle sidebar"
+  },
+  "market": {
+    "open": "Market Open",
+    "pre": "Pre Market",
+    "after": "After Hours",
+    "closed": "Market Closed"
+  },
+  "verdict": {
+    "notAnalyzed": "Not analyzed yet",
+    "BUY": {
+      "label": "Buy",
+      "description": "Conditions support buying with the usual considerations"
+    },
+    "HOLD": {
+      "label": "Hold",
+      "description": "Mixed signals, no strong push to act either way"
+    },
+    "SELL": {
+      "label": "Sell",
+      "description": "Conditions point to more risk than opportunity"
+    }
+  },
+  "home": {
+    "title": "Home",
+    "subtitle": "Today's market pulse, movers, news, and your watchlist.",
+    "marketSummary": "Market summary",
+    "marketError": "Market data failed to load, try again",
+    "gainers": "Top gainers",
+    "losers": "Top losers",
+    "news": "Latest news",
+    "newsError": "News failed to load, try again",
+    "watchlist": "Watchlist",
+    "seeAll": "See all",
+    "watchlistError": "Watchlist failed to load, try again",
+    "watchlistEmpty": "No stocks tracked yet. Save one from a company page."
+  },
+  "companies": {
+    "title": "Company Explorer",
+    "subtitle": "Search companies by ticker or name. For example, type AAPL for Apple Inc.",
+    "searchLabel": "Search ticker or company name",
+    "searchPlaceholder": "Type a ticker or company name",
+    "popular": "Popular now",
+    "notFound": "Stock {ticker} not found",
+    "notFoundHint": "Check the ticker symbol again, or pick one from the popular list.",
+    "tabs": {
+      "overview": "Overview",
+      "fundamental": "Fundamental",
+      "chart": "Chart",
+      "news": "News"
+    },
+    "ctaTitle": "Ready to dig deeper?",
+    "ctaBody": "Three AI Agents will analyze fundamentals, technicals, and sentiment for {ticker}.",
+    "ctaButton": "Analyze this stock",
+    "fundamentalNote": "Full metrics and year over year trends are coming in a later iteration.",
+    "chartError": "The chart for {ticker} failed to load, try again",
+    "newsEmpty": "No news yet",
+    "newsHint": "The news feed for {ticker} will arrive once the news endpoint is ready",
+    "metrics": {
+      "peLabel": "P/E Ratio",
+      "peHint": "How many times annual earnings you pay for one share",
+      "roeLabel": "ROE",
+      "roeHint": "How efficiently the company uses shareholder equity",
+      "deLabel": "D/E Ratio",
+      "deHint": "Debt relative to equity, a measure of leverage",
+      "dividendLabel": "Dividend Yield",
+      "dividendHint": "Annual dividend return relative to the share price"
+    }
+  },
+  "analysis": {
+    "title": "AI Analysis",
+    "subtitle": "Four steps of reasoning, one conclusion you can test.",
+    "tickerLabel": "Ticker",
+    "tickerPlaceholder": "For example AAPL",
+    "riskLabel": "Risk profile",
+    "risk": {
+      "Conservative": "Conservative",
+      "Moderate": "Moderate",
+      "Aggressive": "Aggressive"
+    },
+    "goalLabel": "Investment goal",
+    "goal": {
+      "Short Term": "Short term",
+      "Long Term": "Long term"
+    },
+    "submit": "Start analysis",
+    "submitting": "Analyzing",
+    "failed": "Analysis failed, try again",
+    "loadingTitle": "Analyzing {ticker}",
+    "loadingBody": "The Data Collector is gathering data, three AI Agents will assess and conclude",
+    "confidence": "Confidence",
+    "trailTitle": "How it thinks",
+    "trail": {
+      "collectorTitle": "Data Collector",
+      "collectorRole": "Not AI, gathers market data and news",
+      "collectorOutput": "Data gathered from Yahoo Finance and Google News",
+      "agent1Title": "AI Agent 1, Fundamental and Technical",
+      "agent1Role": "Assesses business health and price structure",
+      "agent1Output": "Fundamental {fundamental}, Technical {technical}",
+      "agent2Title": "AI Agent 2, Risk and Sentiment",
+      "agent2Role": "Weighs volatility and market sentiment",
+      "agent2Output": "Risk score {risk}",
+      "agent3Title": "AI Agent 3, Decision",
+      "agent3Role": "Consolidates into a final recommendation",
+      "agent3Output": "Recommendation {recommendation}, confidence {confidence}%"
+    },
+    "scores": {
+      "fundamentalLabel": "Fundamental",
+      "fundamentalHint": "Business health and valuation",
+      "technicalLabel": "Technical",
+      "technicalHint": "Price structure and momentum",
+      "riskLabel": "Risk",
+      "riskHint": "Fit with your risk profile"
+    },
+    "reasons": "Key reasons",
+    "analyzeAnother": "Analyze another stock",
+    "save": "Save to Watchlist",
+    "saved": "Saved to Watchlist",
+    "saveError": "Could not save to watchlist, try again",
+    "disclaimer": "This analysis helps you think more clearly. The final investment decision remains yours, and Stock AI is not a licensed investment advisor."
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "loginSubtitle": "Pick up the analysis you already started.",
+    "registerTitle": "Try it free",
+    "registerSubtitle": "Create an account to start analyzing stocks.",
+    "name": "Name",
+    "namePlaceholder": "Your full name",
+    "email": "Email",
+    "emailPlaceholder": "you@email.com",
+    "password": "Password",
+    "passwordConfirm": "Confirm password",
+    "processing": "Processing",
+    "submitLogin": "Sign in",
+    "submitRegister": "Sign up",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "toRegister": "Try it free",
+    "toLogin": "Sign in"
+  },
+  "showcase": {
+    "title": "Design tokens and primitives",
+    "subtitle": "Verifying the palette, typography, Button, Badge, and icon catalog",
+    "iconCatalog": "Icon catalog",
+    "iconsInButton": "Icons in Button",
+    "iconsInBadge": "Icons in Badge",
+    "iconSizes": "Icon sizes",
+    "addWatchlist": "Add to watchlist",
+    "analyzeWithAi": "Analyze with AI",
+    "viewDetail": "View details",
+    "remove": "Remove",
+    "reanalyze": "Re-run analysis",
+    "aiSignal": "AI signal",
+    "analyzed": "Already analyzed"
+  },
+  "theme": {
+    "toLight": "Switch to light mode",
+    "toDark": "Switch to dark mode"
+  },
+  "meta": {
+    "description": "AI powered stock analysis with transparent reasoning, from fundamentals to Smart Money Concept."
+  },
+  "learn": {
+    "title": "Learn",
+    "subtitle": "Understand the terms behind the analysis, from fundamentals to Smart Money Concept.",
+    "categories": "Categories",
+    "glossary": "Glossary",
+    "searchPlaceholder": "Search a term, for example order block or ROE",
+    "noResults": "No terms match your search.",
+    "termsInCategory": "Terms in this category",
+    "backToCategories": "Back to all categories",
+    "learnMoreIn": "Learn more in {category}"
+  },
+  "landing": {
+    "badge": "Multi agent analysis",
+    "heroTitle": "Stock analysis that shows how it thinks",
+    "heroBody": "Three AI Agents analyze fundamentals, price structure, and market sentiment. You see the whole reasoning trail, not just the final call.",
+    "ctaPrimary": "Try it free",
+    "ctaSecondary": "See how it works",
+    "heroNote": "We are not investment advisors. The analysis here helps you think more clearly, the final decision stays yours.",
+    "agents": {
+      "collectorName": "Data Collector",
+      "collectorRole": "Gathers financial reports, historical prices, and the latest news",
+      "agent1Name": "AI Agent 1, Fundamental and Technical",
+      "agent1Role": "Assesses business health and price structure using the Smart Money Concept framework",
+      "agent2Name": "AI Agent 2, Risk and Sentiment",
+      "agent2Role": "Weighs news, market sentiment, and volatility",
+      "agent3Name": "AI Agent 3, Decision",
+      "agent3Role": "Pulls it all together into one conclusion you can test"
+    },
+    "howTitle": "Three steps, one conclusion you can test",
+    "step1Title": "Pick a stock",
+    "step1Body": "Search by ticker or company name. The business profile and key numbers open right away.",
+    "step2Title": "Run the analysis",
+    "step2Body": "State your horizon and risk tolerance. Three AI Agents go to work, their reasoning opens step by step.",
+    "step3Title": "Test the conclusion",
+    "step3Body": "Trace every reason down to the raw data. Agree or not, you know exactly what it was based on.",
+    "featuresTitle": "Built for people who want to understand, not just be told",
+    "features": {
+      "reasoningTitle": "Reasoning in the open",
+      "reasoningBody": "Every conclusion can be traced to its raw data. You are never asked to just take our word for it.",
+      "hybridTitle": "Fundamental and technical together",
+      "hybridBody": "Business health and price structure are analyzed side by side, not one at the expense of the other.",
+      "educationTitle": "Education built in",
+      "educationBody": "Click any term in a result and the explanation opens without leaving the page.",
+      "historyTitle": "A track record you keep",
+      "historyBody": "Every analysis is saved, so you can judge for yourself how useful this tool really is."
+    },
+    "modeTitle": "As deep as you need, no deeper",
+    "modeBody": "Start with a clean, clear view. When you are ready, open the full depth with one toggle.",
+    "simpleBadge": "Simple Mode",
+    "simpleBody": "For those just starting out, or without time to read twenty metrics.",
+    "simpleItems": [
+      "Conclusions in everyday language",
+      "Key reasons summarized in three points",
+      "Technical terms explained on click",
+      "Clean charts without stacked indicators"
+    ],
+    "proBadge": "Pro Mode",
+    "proBody": "For those who want to dissect every assumption and challenge the conclusion.",
+    "proItems": [
+      "Every agent's full reasoning opened up",
+      "Smart Money Concept overlay on charts",
+      "Complete fundamental metrics",
+      "Liquidity zones and order blocks"
+    ],
+    "finalTitle": "Stop guessing. Start testing.",
+    "finalBody": "Run your first analysis today, no credit card needed.",
+    "finalCta": "Try it free"
+  },
+  "marketing": {
+    "login": "Sign in",
+    "register": "Try it free",
+    "footerLearn": "Learn",
+    "footerPrivacy": "Privacy",
+    "footerTerms": "Terms",
+    "disclaimer": "{name} is an analytical and educational tool, not a licensed investment advisor. The analysis we present guarantees no outcome. Investment decisions remain entirely your responsibility.",
+    "nav": {
+      "how": "How it works",
+      "advantages": "Advantages",
+      "audience": "Who it is for"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Account preferences and theme options will arrive once the auth backend is ready.",
+    "profileTitle": "Investment Profile",
+    "profileSubtitle": "Investment horizon, risk profile, and other preferences will arrive once the auth backend is ready."
+  },
+  "watchlistStar": {
+    "save": "Save",
+    "saved": "Saved"
+  },
+  "watchlist": {
+    "title": "Watchlist",
+    "subtitle": "The stocks you follow, with their AI status and latest prices.",
+    "error": "Watchlist failed to load, try again",
+    "emptyTitle": "Your watchlist is still empty",
+    "emptyBody": "Save a stock from a company page or from an AI Analysis result to track it here.",
+    "browseCompanies": "Browse companies",
+    "actions": {
+      "reanalyze": "Re-run analysis",
+      "alert": "Set alert",
+      "detail": "View details",
+      "remove": "Remove from watchlist"
+    }
+  },
+  "confirm": {
+    "cancel": "Cancel",
+    "deleteWatchlistTitle": "Remove from watchlist?",
+    "deleteWatchlistBody": "{name} will be removed from your watchlist.",
+    "deleteConfirm": "Remove",
+    "logoutTitle": "Log out?",
+    "logoutBody": "You'll need to sign in again to access your analysis and watchlist.",
+    "logoutConfirm": "Log out"
+  },
+  "alert": {
+    "title": "Set price alert",
+    "description": "Notify me when {ticker} reaches the target price.",
+    "targetPrice": "Target price",
+    "above": "Rises to or above",
+    "below": "Falls to or below",
+    "save": "Save alert",
+    "remove": "Remove alert",
+    "active": "Alert active",
+    "current": "Current price {price}"
+  }
+}

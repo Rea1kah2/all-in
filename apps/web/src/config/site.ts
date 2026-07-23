@@ -1,12 +1,12 @@
 export const site = {
   name: "All-in",
-  tagline: "All-in ajah disini",
+  tagline: "Analisis saham yang bisa Anda telusuri",
   description:
-    "Lima agent AI menganalisis fundamental, teknikal, dan sentimen. Anda melihat seluruh alur penalarannya, bukan hanya kesimpulannya.",
+    "Tiga AI Agent menganalisis fundamental, teknikal, dan sentimen. Anda melihat seluruh alur penalarannya, bukan hanya kesimpulannya.",
 };
 
 export const marketingNav = [
-  { href: "#cara-kerja", label: "Cara Kerja" },
-  { href: "keunggulan", label: "Keunggulan" },
-  { href: "#mode", label: "Untuk siapa" },
+  { href: "#cara-kerja", key: "how" },
+  { href: "#keunggulan", key: "advantages" },
+  { href: "#mode", key: "audience" },
 ];

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import type { MarketPhase, MarketReading } from "@/lib/market";
 import { readMarket } from "@/lib/market";
@@ -13,6 +14,7 @@ const dotStyles: Record<MarketPhase, string> = {
 };
 
 export function MarketStatus() {
+  const t = useTranslations("market");
   const [reading, setReading] = useState<MarketReading | null>(null);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export function MarketStatus() {
           )}
         />
       </span>
-      <span className="text-xs text-ink-muted">{reading.label}</span>
+      <span className="text-xs text-ink-muted">{t(reading.phase)}</span>
       <span className="font-mono text-xs text-ink-faint">{reading.timeLabel}</span>
     </div>
   );

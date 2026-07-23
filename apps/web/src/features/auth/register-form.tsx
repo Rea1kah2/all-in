@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -20,6 +21,7 @@ function isFieldName(value: string): value is FieldName {
 
 export function RegisterForm() {
   const registerUser = useRegister();
+  const t = useTranslations("auth");
 
   const {
     register,
@@ -54,33 +56,32 @@ export function RegisterForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-5" noValidate>
       <div className="space-y-1">
-        <h1 className="text-xl text-ink">Coba gratis</h1>
-        <p className="text-sm text-ink-muted">
-          Analisis pertama Anda tanpa kartu kredit.
-        </p>
+        <h1 className="text-xl text-ink">{t("registerTitle")}</h1>
+        <p className="text-sm text-ink-muted">{t("registerSubtitle")}</p>
       </div>
 
-      <Field label="Nama" htmlFor="name" error={errors.name?.message}>
+      <Field label={t("name")} htmlFor="name" error={errors.name?.message}>
         <Input
           id="name"
           autoComplete="name"
+          placeholder={t("namePlaceholder")}
           aria-invalid={Boolean(errors.name)}
           {...register("name")}
         />
       </Field>
 
-      <Field label="Email" htmlFor="email" error={errors.email?.message}>
+      <Field label={t("email")} htmlFor="email" error={errors.email?.message}>
         <Input
           id="email"
           type="email"
           autoComplete="email"
-          placeholder="anda@email.com"
+          placeholder={t("emailPlaceholder")}
           aria-invalid={Boolean(errors.email)}
           {...register("email")}
         />
       </Field>
 
-      <Field label="Kata sandi" htmlFor="password" error={errors.password?.message}>
+      <Field label={t("password")} htmlFor="password" error={errors.password?.message}>
         <Input
           id="password"
           type="password"
@@ -91,7 +92,7 @@ export function RegisterForm() {
       </Field>
 
       <Field
-        label="Ulangi kata sandi"
+        label={t("passwordConfirm")}
         htmlFor="password_confirmation"
         error={errors.password_confirmation?.message}
       >
@@ -104,14 +105,14 @@ export function RegisterForm() {
         />
       </Field>
 
-      <Button type="submit" className="w-full" disabled={registerUser.isPending}>
-        {registerUser.isPending ? "Memproses" : "Buat akun"}
+      <Button type="submit" className="w-full" loading={registerUser.isPending}>
+        {registerUser.isPending ? t("processing") : t("submitRegister")}
       </Button>
 
       <p className="text-center text-sm text-ink-muted">
-        Sudah punya akun?{" "}
+        {t("haveAccount")}{" "}
         <Link href="/login" className="text-teal hover:underline">
-          Masuk
+          {t("toLogin")}
         </Link>
       </p>
     </form>

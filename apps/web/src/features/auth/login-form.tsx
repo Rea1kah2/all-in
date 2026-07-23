@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -12,6 +13,7 @@ import { type LoginInput, loginSchema } from "@/types/auth";
 
 export function LoginForm() {
   const login = useLogin();
+  const t = useTranslations("auth");
 
   const {
     register,
@@ -46,24 +48,22 @@ export function LoginForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-5" noValidate>
       <div className="space-y-1">
-        <h1 className="text-xl text-ink">Masuk</h1>
-        <p className="text-sm text-ink-muted">
-          Lanjutkan analisis yang sudah Anda mulai.
-        </p>
+        <h1 className="text-xl text-ink">{t("loginTitle")}</h1>
+        <p className="text-sm text-ink-muted">{t("loginSubtitle")}</p>
       </div>
 
-      <Field label="Email" htmlFor="email" error={errors.email?.message}>
+      <Field label={t("email")} htmlFor="email" error={errors.email?.message}>
         <Input
           id="email"
           type="email"
           autoComplete="email"
-          placeholder="anda@email.com"
+          placeholder={t("emailPlaceholder")}
           aria-invalid={Boolean(errors.email)}
           {...register("email")}
         />
       </Field>
 
-      <Field label="Kata sandi" htmlFor="password" error={errors.password?.message}>
+      <Field label={t("password")} htmlFor="password" error={errors.password?.message}>
         <Input
           id="password"
           type="password"
@@ -79,14 +79,14 @@ export function LoginForm() {
         </p>
       ) : null}
 
-      <Button type="submit" className="w-full" disabled={login.isPending}>
-        {login.isPending ? "Memproses" : "Masuk"}
+      <Button type="submit" className="w-full" loading={login.isPending}>
+        {login.isPending ? t("processing") : t("submitLogin")}
       </Button>
 
       <p className="text-center text-sm text-ink-muted">
-        Belum punya akun?{" "}
+        {t("noAccount")}{" "}
         <Link href="/register" className="text-teal hover:underline">
-          Coba gratis
+          {t("toRegister")}
         </Link>
       </p>
     </form>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { mainNav } from "@/config/nav";
 import { cn } from "@/lib/utils";
 
@@ -9,20 +10,21 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AppSidebar() {
+export function AppSidebar({ collapsed }: { collapsed: boolean }) {
   const pathname = usePathname();
+  const t = useTranslations("nav");
+  const tApp = useTranslations("app");
 
   return (
-    <aside className="hidden w-60 shrink-0 border-r border-lin bg-surface md:sticky md:top-0 md:flex md:h-screen md:flex-col">
-      <div className="flex h-16 items-center border-b border-line px-5">
-        <Link href="/home" className="flex items-center gap-2.5">
-          <span className="size-2 rounded-full bg-brass" />
-          <span className="text-sm text-ink">Stock AI</span>
-        </Link>
-      </div>
-
+    <aside
+      aria-hidden={collapsed}
+      className={cn(
+        "hidden shrink-0 overflow-hidden border-line bg-surface transition-[width] duration-200 md:sticky md:top-16 md:flex md:h-[calc(100vh-4rem)] md:flex-col",
+        collapsed ? "md:w-0 md:border-0" : "md:w-60 md:border-r",
+      )}
+    >
       <nav className="flex flex-1 flex-col gap-1 p-3">
-        {mainNav.map(({ href, label, Icon }) => {
+        {mainNav.map(({ href, key, Icon }) => {
           const active = isActive(pathname, href);
           return (
             <Link
@@ -37,16 +39,14 @@ export function AppSidebar() {
               )}
             >
               <Icon size={16} />
-              {label}
+              {t(`${key}.label`)}
             </Link>
           );
         })}
       </nav>
 
       <div className="border-t border-line p-4">
-        <p className="text-xs leading-relaxed text-ink-faint">
-          Analisis AI membantu Anda berpikir jernih. STAY DYOR!
-        </p>
+        <p className="text-xs leading-relaxed text-ink-faint">{tApp("sidebarNote")}</p>
       </div>
     </aside>
   );

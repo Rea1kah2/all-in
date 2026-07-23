@@ -1,13 +1,16 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { site } from "@/config/site";
 
 const footerLinks = [
-  { href: "/learn", label: "Learn" },
-  { href: "/privacy", label: "Privasi" },
-  { href: "/terms", label: "Ketentuan" },
+  { href: "/learn", key: "footerLearn" },
+  { href: "/privacy", key: "footerPrivacy" },
+  { href: "/terms", key: "footerTerms" },
 ];
 
-export function MarketingFooter() {
+export async function MarketingFooter() {
+  const t = await getTranslations("marketing");
+
   return (
     <footer className="border-t border-line">
       <div className="mx-auto max-w-6xl px-5 py-10 md:px-8">
@@ -18,22 +21,20 @@ export function MarketingFooter() {
           </div>
 
           <nav className="flex flex-wrap gap-6">
-            {footerLinks.map(({ href, label }) => (
+            {footerLinks.map(({ href, key }) => (
               <Link
                 key={href}
                 href={href}
                 className="text-sm text-ink-muted transition-colors hover:text-ink"
               >
-                {label}
+                {t(key)}
               </Link>
             ))}
           </nav>
         </div>
 
         <p className="mt-8 max-w-2xl text-xs leading-relaxed text-ink-faint">
-          {site.name} adalah alat analitis dan edukasi, bukan penasihat investasi
-          berlisensi. Analisis yang kami sajikan tidak menjamin hasil apa pun. Keputusan
-          investasi sepenuhnya menjadi tanggung jawab Anda.
+          {t("disclaimer", { name: site.name })}
         </p>
       </div>
     </footer>

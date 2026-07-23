@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { marketingNav, site } from "@/config/site";
 
-export function MarketingHeader() {
+export async function MarketingHeader() {
+  const t = await getTranslations("marketing");
+
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-5 md:px-8">
@@ -13,13 +16,13 @@ export function MarketingHeader() {
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">
-          {marketingNav.map(({ href, label }) => (
+          {marketingNav.map(({ href, key }) => (
             <Link
               key={href}
               href={href}
               className="text-sm text-ink-muted transition-colors hover:text-ink"
             >
-              {label}
+              {t(`nav.${key}`)}
             </Link>
           ))}
         </nav>
@@ -27,10 +30,10 @@ export function MarketingHeader() {
         <div className="flex items-center gap-2.5">
           <ThemeToggle />
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link href="/login">Masuk</Link>
+            <Link href="/login">{t("login")}</Link>
           </Button>
           <Button asChild size="sm">
-            <Link href="/register">Coba gratis</Link>
+            <Link href="/register">{t("register")}</Link>
           </Button>
         </div>
       </div>

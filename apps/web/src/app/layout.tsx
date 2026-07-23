@@ -1,20 +1,28 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
 import { QueryProvider } from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
+import { site } from "@/config/site";
 import { plexMono, plexSans } from "@/lib/fonts";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "All-in",
-  description: "Cacing Cacing, Naga Naga, Mantap!!!",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  return {
+    title: site.name,
+    description: t("description"),
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+
   return (
     <html
-      lang="id"
+      lang={locale}
       className={`${plexSans.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
@@ -25,7 +33,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProvider>{children}</QueryProvider>
+          <NextIntlClientProvider>
+            <QueryProvider>{children}</QueryProvider>
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>

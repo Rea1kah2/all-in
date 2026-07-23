@@ -1,10 +1,12 @@
-export default function SettingsPage() {
+import { getTranslations } from "next-intl/server";
+
+export default async function SettingsPage() {
+  const t = await getTranslations("settings");
+
   return (
     <div className="space-y-2">
-      <h1 className="text-2xl">Pengaturan</h1>
-      <p className="text-sm text-ink-muted">
-        Preferensi akun, bahasa, dan tema akan hadir setelah auth siap.
-      </p>
+      <h1 className="text-2xl text-ink">{t("title")}</h1>
+      <p className="text-sm text-ink-muted">{t("subtitle")}</p>
     </div>
   );
 }

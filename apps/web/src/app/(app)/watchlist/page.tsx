@@ -1,10 +1,17 @@
-export default function WatchlistPage() {
+import { getTranslations } from "next-intl/server";
+import { WatchlistView } from "@/features/watchlist/watchlist-view";
+
+export default async function WatchlistPage() {
+  const t = await getTranslations("watchlist");
+
   return (
-    <div className="space-y-2">
-      <h1 className="text-2xl">Watchlist</h1>
-      <p className="text-sm text-ink-muted">
-        Tabel dengan empat aksi per baris akan hadir di STEP 11.
-      </p>
+    <div className="mx-auto max-w-4xl space-y-8">
+      <div>
+        <h1 className="text-2xl text-ink">{t("title")}</h1>
+        <p className="mt-1 text-sm text-ink-muted">{t("subtitle")}</p>
+      </div>
+
+      <WatchlistView />
     </div>
   );
 }

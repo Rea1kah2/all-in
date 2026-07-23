@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,7 @@ function MoonGlyph() {
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
+  const t = useTranslations("theme");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export function ThemeToggle() {
       variant="secondary"
       size="icon"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={isDark ? "Aktifkan mode terang" : "Aktifkan mode gelap"}
+      aria-label={isDark ? t("toLight") : t("toDark")}
     >
       {isDark ? <SunGlyph /> : <MoonGlyph />}
     </Button>

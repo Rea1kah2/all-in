@@ -231,3 +231,33 @@ export function HomeIcon(props: IconProps) {
     </Icon>
   );
 }
+
+export function MenuIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 6h16" />
+      <path d="M4 12h16" />
+      <path d="M4 18h16" />
+    </Icon>
+  );
+}
+
+export function SpinnerIcon({ size = 20, color, className, ...rest }: IconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      {...rest}
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke={color ?? "currentColor"}
+      strokeWidth={2}
+      strokeLinecap="round"
+      className={className ? `animate-spin ${className}` : "animate-spin"}
+    >
+      <circle cx="12" cy="12" r="9" opacity="0.25" />
+      <path d="M21 12a9 9 0 0 0-9-9" />
+    </svg>
+  );
+}

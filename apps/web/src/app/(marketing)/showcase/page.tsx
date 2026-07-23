@@ -21,6 +21,7 @@ import {
   TrendingDownIcon,
   TrendingUpIcon,
 } from "@/components/icons";
+import { getTranslations } from "next-intl/server";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -49,22 +50,22 @@ const icons = [
   { name: "home", Icon: HomeIcon },
 ];
 
-export default function HomePage() {
+export default async function ShowcasePage() {
+  const t = await getTranslations("showcase");
+
   return (
     <main className="min-h-screen px-8 py-12">
       <div className="mx-auto max-w-3xl space-y-10">
         <header className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl">Design tokens dan primitive</h1>
-            <p className="mt-1 text-sm text-ink-muted">
-              Verifikasi palet, tipografi, Button, Badge, dan katalog ikon
-            </p>
+            <h1 className="text-2xl text-ink">{t("title")}</h1>
+            <p className="mt-1 text-sm text-ink-muted">{t("subtitle")}</p>
           </div>
           <ThemeToggle />
         </header>
 
         <section className="space-y-3">
-          <h2 className="text-sm text-ink-muted">Katalog ikon</h2>
+          <h2 className="text-sm text-ink-muted">{t("iconCatalog")}</h2>
           <div className="grid grid-cols-4 gap-3 sm:grid-cols-6">
             {icons.map(({ name, Icon }) => (
               <div
@@ -79,32 +80,32 @@ export default function HomePage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-sm text-ink-muted">Ikon dalam Button</h2>
+          <h2 className="text-sm text-ink-muted">{t("iconsInButton")}</h2>
           <div className="flex flex-wrap gap-3">
             <Button variant="primary">
               <PlusIcon size={16} />
-              Tambah watchlist
+              {t("addWatchlist")}
             </Button>
             <Button variant="signal">
               <BulbIcon size={16} />
-              Analisis dengan AI
+              {t("analyzeWithAi")}
             </Button>
             <Button variant="secondary">
-              Lihat detail
+              {t("viewDetail")}
               <ArrowRightIcon size={16} />
             </Button>
             <Button variant="destructive">
               <TrashIcon size={16} />
-              Hapus
+              {t("remove")}
             </Button>
-            <Button variant="ghost" size="icon" aria-label="Analisis ulang">
+            <Button variant="ghost" size="icon" aria-label={t("reanalyze")}>
               <HistoryIcon size={18} />
             </Button>
           </div>
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-sm text-ink-muted">Ikon dalam Badge</h2>
+          <h2 className="text-sm text-ink-muted">{t("iconsInBadge")}</h2>
           <div className="flex flex-wrap gap-3">
             <Badge variant="bull" numeric>
               <TrendingUpIcon size={12} />
@@ -116,11 +117,11 @@ export default function HomePage() {
             </Badge>
             <Badge variant="signal">
               <BulbIcon size={12} />
-              Sinyal AI
+              {t("aiSignal")}
             </Badge>
             <Badge variant="neutral">
               <CheckIcon size={12} />
-              Sudah dianalisis
+              {t("analyzed")}
             </Badge>
           </div>
         </section>

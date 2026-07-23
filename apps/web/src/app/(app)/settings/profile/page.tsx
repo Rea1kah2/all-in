@@ -1,11 +1,12 @@
-export default function ProfileSettingsPage() {
+import { getTranslations } from "next-intl/server";
+
+export default async function ProfileSettingsPage() {
+  const t = await getTranslations("settings");
+
   return (
     <div className="space-y-2">
-      <h1 className="text-2xl">Profil Investasi</h1>
-      <p className="text-sm text-ink-muted">
-        Horizon investasi, profil risiko, dan preferensi lainnya akan hadir setelah auth
-        siap.
-      </p>
+      <h1 className="text-2xl text-ink">{t("profileTitle")}</h1>
+      <p className="text-sm text-ink-muted">{t("profileSubtitle")}</p>
     </div>
   );
 }

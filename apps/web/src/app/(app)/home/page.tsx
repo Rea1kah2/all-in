@@ -1,12 +1,26 @@
-export default function HomePage() {
+import { getTranslations } from "next-intl/server";
+import { MarketMovers } from "@/features/home/market-movers";
+import { MarketSummary } from "@/features/home/market-summary";
+import { NewsList } from "@/features/home/news-list";
+import { WatchlistSnippet } from "@/features/home/watchlist-snippet";
+
+export default async function HomePage() {
+  const t = await getTranslations("home");
+
   return (
-    <div className="space-y-2">
-      <h1 className="text-2xl">Home</h1>
-      <p className="text-sm text-ink-muted">
-        Ringkasan pasar, watchlist, dan berita akan hadir di STEP 12.ANJAY MABAR PAL PALE
-        PAL PALEEEEEE WKWKWKWKKWKKJBKJD
-        ASBKAVSOAWGSUIAVWSUYAWVSYVAWSHAWIVSWUAIHSIAWOHSIAWVDUICVAJXWAJKAWUBAWUIHSIOAWHDIOAWH
-      </p>
+    <div className="mx-auto max-w-5xl space-y-8">
+      <div>
+        <h1 className="text-2xl text-ink">{t("title")}</h1>
+        <p className="mt-1 text-sm text-ink-muted">{t("subtitle")}</p>
+      </div>
+
+      <MarketSummary />
+      <MarketMovers />
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <NewsList />
+        <WatchlistSnippet />
+      </div>
     </div>
   );
 }
