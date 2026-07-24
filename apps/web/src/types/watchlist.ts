@@ -11,6 +11,7 @@ export const watchlistItemSchema = z.object({
   recommendation: watchlistRecommendationSchema.nullable(),
   confidence: z.number().min(0).max(100).nullable(),
   addedAt: z.string(),
+  spark: z.array(z.number()).optional(),
 });
 
 export type WatchlistItem = z.infer<typeof watchlistItemSchema>;

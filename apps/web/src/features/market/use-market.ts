@@ -10,6 +10,7 @@ export function useMarket() {
     queryKey: ["market"],
     queryFn: () => apiFetch<MarketSummary>("/api/market"),
     staleTime: 60_000,
+    refetchInterval: 60_000,
   });
 }
 
@@ -18,6 +19,14 @@ export function useNews(ticker?: string) {
     queryKey: ["news", ticker ?? "all"],
     queryFn: () =>
       apiFetch<NewsItem[]>(ticker ? `/api/news?ticker=${ticker}` : "/api/news"),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function useNewsItem(id: string) {
+  return useQuery({
+    queryKey: ["news", "item", id],
+    queryFn: () => apiFetch<NewsItem>(`/api/news/${id}`),
     staleTime: 5 * 60_000,
   });
 }

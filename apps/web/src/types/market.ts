@@ -6,6 +6,7 @@ export const marketIndexSchema = z.object({
   value: z.number(),
   change: z.number(),
   changePercent: z.number(),
+  spark: z.array(z.number()),
 });
 
 export type MarketIndex = z.infer<typeof marketIndexSchema>;
@@ -15,6 +16,7 @@ export const moverSchema = z.object({
   name: z.string(),
   price: z.number(),
   changePercent: z.number(),
+  spark: z.array(z.number()),
 });
 
 export type Mover = z.infer<typeof moverSchema>;

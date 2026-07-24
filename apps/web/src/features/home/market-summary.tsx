@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { MarketStatus } from "@/components/domain/market-status";
 import { TrendingDownIcon, TrendingUpIcon } from "@/components/icons";
+import { Sparkline } from "@/components/ui/sparkline";
 import { useMarket } from "@/features/market/use-market";
 import { cn, formatPercent } from "@/lib/utils";
 
@@ -47,22 +48,30 @@ export function MarketSummary() {
                 className="rounded-card border border-line bg-surface p-5"
               >
                 <p className="text-xs text-ink-muted">{index.name}</p>
-                <p className="mt-2 font-mono text-2xl text-ink">
-                  {formatIndexValue(index.value)}
-                </p>
-                <p
-                  className={cn(
-                    "mt-1 flex items-center gap-1.5 font-mono text-xs",
-                    positive ? "text-bull" : "text-bear",
-                  )}
-                >
-                  {positive ? (
-                    <TrendingUpIcon size={13} />
-                  ) : (
-                    <TrendingDownIcon size={13} />
-                  )}
-                  {formatPercent(index.changePercent)}
-                </p>
+                <div className="mt-2 flex items-end justify-between gap-3">
+                  <div>
+                    <p className="font-mono text-2xl text-ink">
+                      {formatIndexValue(index.value)}
+                    </p>
+                    <p
+                      className={cn(
+                        "mt-1 flex items-center gap-1.5 font-mono text-xs",
+                        positive ? "text-bull" : "text-bear",
+                      )}
+                    >
+                      {positive ? (
+                        <TrendingUpIcon size={13} />
+                      ) : (
+                        <TrendingDownIcon size={13} />
+                      )}
+                      {formatPercent(index.changePercent)}
+                    </p>
+                  </div>
+                  <Sparkline
+                    data={index.spark}
+                    className={cn("shrink-0", positive ? "text-bull" : "text-bear")}
+                  />
+                </div>
               </div>
             );
           })}

@@ -5,27 +5,20 @@ import {
   BarChartIcon,
   BookIcon,
   BulbIcon,
-  CandlestickIcon,
   CheckIcon,
   DocumentIcon,
-  NewsIcon,
-  SearchIcon,
 } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { glossary } from "@/config/learn";
 import { site } from "@/config/site";
+import { popularTickers } from "@/config/tickers";
+import { HeroDemoCard } from "@/features/marketing/hero-demo-card";
 
 export const metadata: Metadata = {
   title: `${site.name}, ${site.tagline}`,
   description: site.description,
 };
-
-const agents = [
-  { key: "collector", Icon: SearchIcon },
-  { key: "agent1", Icon: BarChartIcon },
-  { key: "agent2", Icon: NewsIcon },
-  { key: "agent3", Icon: BulbIcon },
-];
 
 const features = [
   { key: "reasoning", Icon: BulbIcon },
@@ -38,6 +31,13 @@ export default async function LandingPage() {
   const t = await getTranslations("landing");
   const simpleItems = t.raw("simpleItems") as string[];
   const proItems = t.raw("proItems") as string[];
+
+  const stats = [
+    { value: `${popularTickers.length}`, label: t("statStocks") },
+    { value: `${glossary.length}`, label: t("statTerms") },
+    { value: "3", label: t("statAgents") },
+    { value: "2", label: t("statLanguages") },
+  ];
 
   return (
     <>
@@ -71,38 +71,16 @@ export default async function LandingPage() {
             </p>
           </div>
 
-          <div className="rounded-card border border-line bg-surface p-6 md:p-7">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <span className="font-mono text-sm text-ink">AAPL</span>
-                <span className="font-mono text-xs text-ink-faint">184.32</span>
-              </div>
-              <Badge variant="bull" numeric>
-                BUY
-              </Badge>
-            </div>
+          <HeroDemoCard />
+        </div>
 
-            <div className="mt-7 space-y-1">
-              {agents.map(({ key, Icon }, index) => (
-                <div key={key} className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-brass bg-brass-bg text-brass-ink">
-                      <Icon size={15} />
-                    </span>
-                    {index < agents.length - 1 ? (
-                      <span className="w-px flex-1 bg-brass/35" />
-                    ) : null}
-                  </div>
-                  <div className="pb-6">
-                    <p className="text-sm text-ink">{t(`agents.${key}Name`)}</p>
-                    <p className="mt-1 text-xs leading-relaxed text-ink-muted">
-                      {t(`agents.${key}Role`)}
-                    </p>
-                  </div>
-                </div>
-              ))}
+        <div className="mt-16 grid grid-cols-2 gap-6 border-line border-t pt-8 sm:grid-cols-4">
+          {stats.map((stat) => (
+            <div key={stat.label}>
+              <p className="font-mono text-2xl text-ink md:text-3xl">{stat.value}</p>
+              <p className="mt-1 text-xs text-ink-muted">{stat.label}</p>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -190,15 +168,18 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <section className="py-20 md:py-28">
-        <div className="mx-auto max-w-2xl px-5 text-center md:px-8">
+      <section className="px-5 py-20 md:px-8 md:py-28">
+        <div className="mx-auto max-w-4xl rounded-card border border-brass/30 bg-linear-to-b from-brass-bg/40 to-surface px-6 py-14 text-center md:py-16">
           <h2 className="text-3xl leading-tight text-ink">{t("finalTitle")}</h2>
-          <p className="mt-4 text-base leading-relaxed text-ink-muted">
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-ink-muted">
             {t("finalBody")}
           </p>
-          <div className="mt-8 flex justify-center">
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg">
               <Link href="/register">{t("finalCta")}</Link>
+            </Button>
+            <Button asChild variant="secondary" size="lg">
+              <Link href="/learn">{t("finalSecondary")}</Link>
             </Button>
           </div>
         </div>

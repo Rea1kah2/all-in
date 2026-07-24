@@ -48,6 +48,8 @@
     "subtitle": "Denyut pasar hari ini, saham yang bergerak, berita, dan watchlist Anda.",
     "marketSummary": "Ringkasan pasar",
     "marketError": "Data pasar gagal dimuat, coba lagi",
+    "favorites": "Saham favorit Anda",
+    "favoritesEmpty": "Belum ada favorit. Simpan saham ke watchlist untuk memantaunya di sini.",
     "gainers": "Top gainers",
     "losers": "Top losers",
     "news": "Berita terkini",
@@ -56,6 +58,23 @@
     "seeAll": "Lihat semua",
     "watchlistError": "Watchlist gagal dimuat, coba lagi",
     "watchlistEmpty": "Belum ada saham yang dipantau. Simpan dari halaman perusahaan."
+  },
+  "newsCategory": {
+    "tech": "Teknologi",
+    "chips": "Semikonduktor",
+    "macro": "Makroekonomi",
+    "auto": "Otomotif",
+    "retail": "Ritel",
+    "crypto": "Kripto"
+  },
+  "newsDetail": {
+    "back": "Kembali",
+    "loadError": "Berita tidak ditemukan",
+    "loadErrorHint": "Berita mungkin sudah dihapus atau tautannya tidak valid.",
+    "relatedCompany": "Perusahaan terkait",
+    "viewCompany": "Lihat perusahaan",
+    "analyze": "Analisis dengan AI",
+    "placeholderNote": "Isi berita ini masih data contoh untuk pengembangan, bukan berita nyata."
   },
   "companies": {
     "title": "Company Explorer",
@@ -248,7 +267,13 @@
     ],
     "finalTitle": "Berhenti menebak. Mulai menguji.",
     "finalBody": "Coba analisis pertama Anda hari ini, tanpa kartu kredit.",
-    "finalCta": "Coba gratis"
+    "finalCta": "Coba gratis",
+    "finalSecondary": "Lihat materi Learn",
+    "demoVerdict": "Rekomendasi BUY",
+    "statStocks": "Saham tercakup",
+    "statTerms": "Istilah edukasi",
+    "statAgents": "AI Agent",
+    "statLanguages": "Bahasa"
   },
   "marketing": {
     "login": "Masuk",
@@ -262,6 +287,16 @@
       "advantages": "Keunggulan",
       "audience": "Untuk siapa"
     }
+  },
+  "authPanel": {
+    "tagline": "Analisis saham setara institusi, dijelaskan seperti mentor.",
+    "reasoningTitle": "Penalaran transparan",
+    "reasoningBody": "Lihat cara AI berpikir langkah demi langkah, bukan hanya kesimpulan akhirnya.",
+    "educationTitle": "Edukasi menyatu",
+    "educationBody": "Klik istilah mana pun di hasil analisis, penjelasannya langsung terbuka.",
+    "smcTitle": "Kerangka Smart Money Concept",
+    "smcBody": "Sudut pandang institusional pada struktur harga yang jarang dipakai kompetitor.",
+    "disclaimer": "Analisis membantu Anda berpikir lebih jernih. Keputusan akhir tetap di tangan Anda."
   },
   "settings": {
     "title": "Pengaturan",

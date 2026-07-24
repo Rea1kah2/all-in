@@ -107,6 +107,7 @@ function toWatchlistItem(stored: StoredWatchlistItem): WatchlistItem | null {
     recommendation: stored.recommendation,
     confidence: stored.confidence,
     addedAt: stored.addedAt,
+    spark: liveQuote(company.ticker, company.price.current).spark,
   };
 }
 
@@ -665,23 +666,47 @@ function mockAnalyze(ticker: string, request: AnalyzeRequest): AnalyzeResponse |
   };
 }
 
-const marketIndices: MarketIndex[] = [
-  { symbol: "SPX", name: "S&P 500", value: 5478.12, change: 12.34, changePercent: 0.23 },
-  {
-    symbol: "IXIC",
-    name: "Nasdaq Composite",
-    value: 17862.45,
-    change: -45.67,
-    changePercent: -0.25,
-  },
-  {
-    symbol: "DJI",
-    name: "Dow Jones",
-    value: 39120.78,
-    change: 88.9,
-    changePercent: 0.23,
-  },
+const indexBases = [
+  { symbol: "SPX", name: "S&P 500", value: 5478.12 },
+  { symbol: "IXIC", name: "Nasdaq Composite", value: 17862.45 },
+  { symbol: "DJI", name: "Dow Jones", value: 39120.78 },
 ];
+
+function liveQuote(seedKey: string, base: number) {
+  const bucket = Math.floor(Date.now() / 60_000);
+  let seed = bucket % 233280;
+  for (const char of seedKey) {
+    seed = (seed * 31 + char.charCodeAt(0)) % 233280;
+  }
+  const random = () => {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+  const spark: number[] = [];
+  let value = base;
+  for (let i = 0; i < 24; i++) {
+    value += (random() - 0.5) * base * 0.004;
+    spark.push(Number(value.toFixed(2)));
+  }
+  const current = spark[spark.length - 1] ?? base;
+  const change = Number((current - base).toFixed(2));
+  const changePercent = Number(((change / base) * 100).toFixed(2));
+  return { spark, current, change, changePercent };
+}
+
+function liveIndices(): MarketIndex[] {
+  return indexBases.map((index) => {
+    const quote = liveQuote(index.symbol, index.value);
+    return {
+      symbol: index.symbol,
+      name: index.name,
+      value: quote.current,
+      change: quote.change,
+      changePercent: quote.changePercent,
+      spark: quote.spark,
+    };
+  });
+}
 
 const newsItems: NewsItem[] = [
   {
@@ -691,6 +716,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-19T12:30:00.000Z",
     tickers: ["AAPL"],
+    category: "chips",
+    body: [
+      "Apple dikabarkan mempercepat pengembangan chip khusus kecerdasan buatan untuk lini perangkat generasi berikutnya. Langkah ini menandai upaya perusahaan mengurangi ketergantungan pada pemasok pihak ketiga dan menempatkan pemrosesan AI langsung di perangkat pengguna.",
+      "Analis menilai strategi silikon di dalam rumah dapat memperkuat margin jangka panjang dan mempercepat fitur AI baru. Investor akan mencermati apakah investasi riset ini terlihat pada panduan pendapatan kuartal mendatang.",
+    ],
   },
   {
     id: 2,
@@ -699,6 +729,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-19T10:05:00.000Z",
     tickers: ["NVDA"],
+    category: "chips",
+    body: [
+      "NVIDIA memperluas kapasitas pasokan untuk pusat data seiring permintaan komputasi kecerdasan buatan yang terus melonjak. Perusahaan berupaya memenuhi antrean pesanan dari penyedia layanan awan besar yang berlomba membangun infrastruktur AI.",
+      "Kesenjangan antara permintaan dan pasokan chip kelas atas tetap menjadi sorotan utama. Ketahanan rantai pasok dinilai akan menentukan seberapa cepat pertumbuhan pendapatan segmen pusat data dapat dipertahankan.",
+    ],
   },
   {
     id: 3,
@@ -707,6 +742,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-18T20:45:00.000Z",
     tickers: ["MSFT"],
+    category: "tech",
+    body: [
+      "Microsoft melaporkan pertumbuhan Azure yang tetap kuat pada kuartal ini, didorong adopsi layanan awan dan beban kerja kecerdasan buatan. Segmen awan kembali menjadi mesin utama pertumbuhan perusahaan.",
+      "Manajemen menekankan investasi berkelanjutan pada kapasitas pusat data. Investor menilai konsistensi pertumbuhan Azure sebagai indikator penting daya saing jangka panjang.",
+    ],
   },
   {
     id: 4,
@@ -715,6 +755,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-18T15:00:00.000Z",
     tickers: [],
+    category: "macro",
+    body: [
+      "Bank sentral Amerika Serikat memutuskan mempertahankan suku bunga acuan pada level saat ini, sejalan dengan ekspektasi sebagian besar pelaku pasar. Pejabat menekankan pendekatan berbasis data sebelum menentukan arah kebijakan selanjutnya.",
+      "Pasar merespons dengan hati hati, mencerna sinyal soal inflasi dan ketenagakerjaan. Keputusan ini berdampak luas pada valuasi saham, terutama sektor yang sensitif terhadap biaya pinjaman.",
+    ],
   },
   {
     id: 5,
@@ -723,6 +768,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-18T09:20:00.000Z",
     tickers: ["AMZN"],
+    category: "retail",
+    body: [
+      "Amazon menata ulang jaringan logistiknya untuk menekan biaya pengiriman dan mempercepat waktu antar. Perusahaan mengoptimalkan lokasi gudang serta rute distribusi guna meningkatkan efisiensi operasional.",
+      "Penghematan biaya di rantai pasok berpotensi memperbaiki margin ritel yang selama ini tipis. Analis mencermati dampaknya terhadap arus kas bebas pada kuartal mendatang.",
+    ],
   },
   {
     id: 6,
@@ -731,6 +781,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-19T08:15:00.000Z",
     tickers: ["GOOGL"],
+    category: "tech",
+    body: [
+      "Alphabet memperluas integrasi kecerdasan buatan di seluruh lini produk pencarian, membawa ringkasan dan jawaban generatif ke lebih banyak pengguna. Langkah ini menegaskan posisi AI sebagai inti strategi produk perusahaan.",
+      "Tantangannya adalah menjaga relevansi iklan sambil meningkatkan pengalaman pencarian. Investor menilai keseimbangan ini penting bagi keberlanjutan pendapatan iklan.",
+    ],
   },
   {
     id: 7,
@@ -739,6 +794,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-18T13:40:00.000Z",
     tickers: ["TSLA"],
+    category: "auto",
+    body: [
+      "Tesla meningkatkan produksi pabrik baterai menjelang kuartal berikutnya untuk memenuhi permintaan kendaraan listrik dan penyimpanan energi. Peningkatan kapasitas ini dinilai krusial bagi target pengiriman perusahaan.",
+      "Efisiensi produksi baterai berkaitan langsung dengan struktur biaya kendaraan. Pasar mengamati apakah skala baru ini mampu menjaga margin di tengah persaingan harga.",
+    ],
   },
   {
     id: 8,
@@ -747,6 +807,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-17T16:10:00.000Z",
     tickers: ["META"],
+    category: "tech",
+    body: [
+      "Meta memperkenalkan sejumlah alat periklanan berbasis kecerdasan buatan generatif yang membantu pengiklan membuat materi kreatif secara otomatis. Fitur ini bertujuan meningkatkan kinerja kampanye sekaligus menyederhanakan alur kerja.",
+      "Otomasi kreatif berpotensi mendorong belanja iklan dari pelaku usaha kecil. Investor menilai adopsi alat ini sebagai penopang pertumbuhan pendapatan iklan.",
+    ],
   },
   {
     id: 9,
@@ -755,6 +820,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-17T11:25:00.000Z",
     tickers: ["PLTR"],
+    category: "tech",
+    body: [
+      "Palantir memenangkan kontrak pemerintah baru untuk platform analitik data, memperkuat posisinya di sektor publik. Kontrak ini menambah aliran pendapatan berulang yang dinilai stabil oleh analis.",
+      "Ketergantungan pada anggaran pemerintah tetap menjadi faktor risiko sekaligus peluang. Pasar mencermati apakah momentum kontrak dapat merambah ke sektor komersial.",
+    ],
   },
   {
     id: 10,
@@ -763,6 +833,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-16T19:50:00.000Z",
     tickers: ["COIN"],
+    category: "crypto",
+    body: [
+      "Coinbase mencatat lonjakan volume perdagangan seiring rally pasar kripto yang menarik kembali minat investor ritel maupun institusi. Aktivitas yang meningkat berdampak langsung pada pendapatan berbasis transaksi.",
+      "Ketergantungan pada volatilitas kripto membuat pendapatan perusahaan sangat fluktuatif. Analis menyoroti upaya diversifikasi ke layanan yang lebih stabil seperti kustodian dan staking.",
+    ],
   },
   {
     id: 11,
@@ -771,6 +846,11 @@ const newsItems: NewsItem[] = [
     url: "#",
     publishedAt: "2026-07-16T07:30:00.000Z",
     tickers: ["INTC"],
+    category: "chips",
+    body: [
+      "Intel memulai produksi node chip generasi terbaru di pabrik Arizona, tonggak penting dalam upaya perusahaan merebut kembali kepemimpinan manufaktur semikonduktor. Fasilitas ini menjadi bagian dari ekspansi kapasitas domestik.",
+      "Keberhasilan menaikkan hasil produksi pada node baru akan menentukan daya saing biaya. Investor menanti bukti bahwa investasi pabrik besar ini mulai membuahkan hasil.",
+    ],
   },
 ];
 
@@ -789,12 +869,16 @@ function localizedNews(items: NewsItem[]): NewsItem[] {
 }
 
 function buildMovers(): { gainers: Mover[]; losers: Mover[] } {
-  const movers: Mover[] = Object.values(companies).map((company) => ({
-    ticker: company.ticker,
-    name: company.name,
-    price: company.price.current,
-    changePercent: company.price.changePercent,
-  }));
+  const movers: Mover[] = Object.values(companies).map((company) => {
+    const quote = liveQuote(company.ticker, company.price.current);
+    return {
+      ticker: company.ticker,
+      name: company.name,
+      price: quote.current,
+      changePercent: quote.changePercent,
+      spark: quote.spark,
+    };
+  });
   const byDesc = [...movers].sort((a, b) => b.changePercent - a.changePercent);
   const byAsc = [...movers].sort((a, b) => a.changePercent - b.changePercent);
   return { gainers: byDesc.slice(0, 3), losers: byAsc.slice(0, 3) };
@@ -952,8 +1036,18 @@ export async function mockApiFetch<T>(
 
   if (path === "/api/market" && method === "GET") {
     const { gainers, losers } = buildMovers();
-    const summary: MarketSummary = { indices: marketIndices, gainers, losers };
+    const summary: MarketSummary = { indices: liveIndices(), gainers, losers };
     return summary as T;
+  }
+
+  const newsDetailMatch = path.match(/^\/api\/news\/(\d+)$/);
+  if (newsDetailMatch && method === "GET") {
+    const id = Number(newsDetailMatch[1]);
+    const item = newsItems.find((entry) => entry.id === id);
+    if (!item) {
+      throw new ApiError("Berita tidak ditemukan", 404);
+    }
+    return localizedNews([item])[0] as T;
   }
 
   const newsMatch = path.match(/^\/api\/news(?:\?(.*))?$/);

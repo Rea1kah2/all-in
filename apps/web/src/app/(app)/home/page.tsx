@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { FavoritesStrip } from "@/features/home/favorites-strip";
 import { MarketMovers } from "@/features/home/market-movers";
 import { MarketSummary } from "@/features/home/market-summary";
 import { NewsList } from "@/features/home/news-list";
@@ -15,6 +16,7 @@ export default async function HomePage() {
       </div>
 
       <MarketSummary />
+      <FavoritesStrip />
       <MarketMovers />
 
       <div className="grid gap-6 lg:grid-cols-2">

@@ -27,7 +27,13 @@ const themes = {
   },
 };
 
-export function CompanyChart({ candles }: { candles: Candle[] }) {
+export function CompanyChart({
+  candles,
+  height = 420,
+}: {
+  candles: Candle[];
+  height?: number;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const { resolvedTheme } = useTheme();
@@ -81,5 +87,5 @@ export function CompanyChart({ candles }: { candles: Candle[] }) {
     };
   }, [candles, resolvedTheme]);
 
-  return <div ref={containerRef} className="h-[420px] w-full" />;
+  return <div ref={containerRef} style={{ height }} className="w-full" />;
 }

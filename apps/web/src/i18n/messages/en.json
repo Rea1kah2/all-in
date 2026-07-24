@@ -48,6 +48,8 @@
     "subtitle": "Today's market pulse, movers, news, and your watchlist.",
     "marketSummary": "Market summary",
     "marketError": "Market data failed to load, try again",
+    "favorites": "Your favorite stocks",
+    "favoritesEmpty": "No favorites yet. Save a stock to your watchlist to track it here.",
     "gainers": "Top gainers",
     "losers": "Top losers",
     "news": "Latest news",
@@ -56,6 +58,23 @@
     "seeAll": "See all",
     "watchlistError": "Watchlist failed to load, try again",
     "watchlistEmpty": "No stocks tracked yet. Save one from a company page."
+  },
+  "newsCategory": {
+    "tech": "Technology",
+    "chips": "Semiconductors",
+    "macro": "Macro",
+    "auto": "Automotive",
+    "retail": "Retail",
+    "crypto": "Crypto"
+  },
+  "newsDetail": {
+    "back": "Back",
+    "loadError": "News not found",
+    "loadErrorHint": "The article may have been removed or the link is invalid.",
+    "relatedCompany": "Related company",
+    "viewCompany": "View company",
+    "analyze": "Analyze with AI",
+    "placeholderNote": "This article content is still sample data for development, not real news."
   },
   "companies": {
     "title": "Company Explorer",
@@ -248,7 +267,13 @@
     ],
     "finalTitle": "Stop guessing. Start testing.",
     "finalBody": "Run your first analysis today, no credit card needed.",
-    "finalCta": "Try it free"
+    "finalCta": "Try it free",
+    "finalSecondary": "Explore the Learn hub",
+    "demoVerdict": "BUY recommendation",
+    "statStocks": "Stocks covered",
+    "statTerms": "Education terms",
+    "statAgents": "AI Agents",
+    "statLanguages": "Languages"
   },
   "marketing": {
     "login": "Sign in",
@@ -262,6 +287,16 @@
       "advantages": "Advantages",
       "audience": "Who it is for"
     }
+  },
+  "authPanel": {
+    "tagline": "Institution grade stock analysis, explained like a mentor.",
+    "reasoningTitle": "Transparent reasoning",
+    "reasoningBody": "See how the AI thinks step by step, not just the final call.",
+    "educationTitle": "Education built in",
+    "educationBody": "Click any term in a result and its explanation opens right away.",
+    "smcTitle": "Smart Money Concept framework",
+    "smcBody": "An institutional view of price structure that competitors rarely use.",
+    "disclaimer": "The analysis helps you think more clearly. The final decision stays yours."
   },
   "settings": {
     "title": "Settings",

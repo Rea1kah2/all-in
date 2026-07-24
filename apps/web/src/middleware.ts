@@ -2,7 +2,14 @@ import { type NextRequest, NextResponse } from "next/server";
 
 const SESSION_COOKIES = ["laravel_session", "mock_session"];
 
-const protectedPrefixes = ["/home", "/analysis", "/companies", "/watchlist", "/settings"];
+const protectedPrefixes = [
+  "/home",
+  "/analysis",
+  "/companies",
+  "/watchlist",
+  "/settings",
+  "/news",
+];
 
 const guestOnlyPaths = ["/login", "/register"];
 

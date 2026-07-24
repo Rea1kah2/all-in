@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import {
   BarChartIcon,
   BulbIcon,
-  CandlestickIcon,
   DocumentIcon,
   NewsIcon,
   TrendingDownIcon,
@@ -100,10 +99,6 @@ export default function CompanyDetailPage() {
             <BarChartIcon size={15} />
             {t("tabs.fundamental")}
           </TabsTrigger>
-          <TabsTrigger value="chart">
-            <CandlestickIcon size={15} />
-            {t("tabs.chart")}
-          </TabsTrigger>
           <TabsTrigger value="news">
             <NewsIcon size={15} />
             {t("tabs.news")}
@@ -116,6 +111,20 @@ export default function CompanyDetailPage() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          <div className="rounded-card border border-line bg-surface p-4">
+            {candles.isPending ? (
+              <div className="h-110 w-full animate-pulse rounded-card bg-bg md:h-130" />
+            ) : candles.isError || !candles.data ? (
+              <div className="flex h-110 items-center justify-center text-center md:h-130">
+                <p className="text-sm text-ink-muted">
+                  {t("chartError", { ticker: data.ticker })}
+                </p>
+              </div>
+            ) : (
+              <CompanyChart candles={candles.data} height={520} />
+            )}
+          </div>
+
           <div className="rounded-card border border-line bg-surface p-6">
             <p className="text-sm leading-relaxed text-ink">{data.description}</p>
           </div>
@@ -142,22 +151,6 @@ export default function CompanyDetailPage() {
           <div className="space-y-4">
             <CompanyMetrics metrics={data.metrics} />
             <p className="text-xs text-ink-muted">{t("fundamentalNote")}</p>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="chart">
-          <div className="rounded-card border border-line bg-surface p-4">
-            {candles.isPending ? (
-              <div className="h-[420px] w-full animate-pulse rounded-card bg-bg" />
-            ) : candles.isError || !candles.data ? (
-              <div className="flex h-[420px] items-center justify-center text-center">
-                <p className="text-sm text-ink-muted">
-                  {t("chartError", { ticker: data.ticker })}
-                </p>
-              </div>
-            ) : (
-              <CompanyChart candles={candles.data} />
-            )}
           </div>
         </TabsContent>
 
