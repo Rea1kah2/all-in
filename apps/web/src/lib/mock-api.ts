@@ -1,16 +1,20 @@
 import { ApiError } from "@/lib/api";
 import { companyDescriptionsId, mockLocale, newsEn } from "@/lib/mock-i18n";
 import type { PriceAlert, SetAlertInput } from "@/types/alert";
-import type { AnalyzeRequest, AnalyzeResponse } from "@/types/analysis";
+import type { AnalyzeResponse, WireRequest } from "@/types/analysis";
 import type { User } from "@/types/auth";
 import type { Candle, Company } from "@/types/company";
 import type { MarketIndex, MarketSummary, Mover } from "@/types/market";
 import type { NewsItem } from "@/types/news";
+import type { Notification } from "@/types/notification";
 import type { AddWatchlistInput, WatchlistItem } from "@/types/watchlist";
 
 const USER_STORE_KEY = "mock:user";
 const SESSION_COOKIE = "mock_session";
 const WATCHLIST_STORE_KEY = "mock:watchlist";
+const NOTIFICATIONS_STORE_KEY = "mock:notifications";
+const FIRED_ALERTS_KEY = "mock:notifications:firedAlerts";
+const NOTIFIED_NEWS_KEY = "mock:notifications:notifiedNews";
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -36,6 +40,110 @@ function storedUser(): User | null {
   } catch {
     return null;
   }
+}
+
+function storedNotifications(): Notification[] {
+  const raw = localStorage.getItem(NOTIFICATIONS_STORE_KEY);
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw) as Notification[];
+  } catch {
+    return [];
+  }
+}
+
+function persistNotifications(items: Notification[]) {
+  localStorage.setItem(NOTIFICATIONS_STORE_KEY, JSON.stringify(items));
+}
+
+function storedStringSet(key: string): Set<string> {
+  const raw = localStorage.getItem(key);
+  if (!raw) return new Set();
+  try {
+    return new Set(JSON.parse(raw) as string[]);
+  } catch {
+    return new Set();
+  }
+}
+
+function persistStringSet(key: string, value: Set<string>) {
+  localStorage.setItem(key, JSON.stringify([...value]));
+}
+
+type NotificationInput = Notification extends infer N
+  ? N extends { id: number; read: boolean; createdAt: string }
+    ? Omit<N, "id" | "read" | "createdAt">
+    : never
+  : never;
+
+function pushNotification(entry: NotificationInput) {
+  const items = storedNotifications();
+  const nextId = items.reduce((max, item) => Math.max(max, item.id), 0) + 1;
+  const notification = {
+    ...entry,
+    id: nextId,
+    read: false,
+    createdAt: new Date().toISOString(),
+  } as Notification;
+  items.unshift(notification);
+  persistNotifications(items.slice(0, 50));
+}
+
+function syncAlertNotifications(user: User) {
+  if (!user.notifyPriceAlert) return;
+  const alerts = storedAlerts();
+  if (alerts.length === 0) return;
+  const fired = storedStringSet(FIRED_ALERTS_KEY);
+  let changed = false;
+  for (const alert of alerts) {
+    if (fired.has(alert.ticker)) continue;
+    const company = companies[alert.ticker];
+    if (!company) continue;
+    const quote = liveQuote(alert.ticker, company.price.current);
+    const hit =
+      alert.condition === "above"
+        ? quote.current >= alert.targetPrice
+        : quote.current <= alert.targetPrice;
+    if (hit) {
+      pushNotification({
+        type: "price_alert",
+        ticker: alert.ticker,
+        targetPrice: alert.targetPrice,
+        condition: alert.condition,
+        href: `/companies/${alert.ticker}`,
+      });
+      fired.add(alert.ticker);
+      changed = true;
+    }
+  }
+  if (changed) persistStringSet(FIRED_ALERTS_KEY, fired);
+}
+
+function syncNewsNotifications(user: User) {
+  if (!user.notifyNewsDigest) return;
+  const tickers = new Set(storedWatchlist().map((item) => item.ticker));
+  if (tickers.size === 0) return;
+  const notified = storedStringSet(NOTIFIED_NEWS_KEY);
+  let changed = false;
+  const relevant = [...newsItems]
+    .filter((item) => item.tickers.some((ticker) => tickers.has(ticker)))
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+    .slice(0, 5);
+  for (const item of relevant) {
+    const key = String(item.id);
+    if (notified.has(key)) continue;
+    const ticker =
+      item.tickers.find((entry) => tickers.has(entry)) ?? item.tickers[0] ?? "";
+    pushNotification({
+      type: "news",
+      ticker,
+      newsId: item.id,
+      href: `/news/${item.id}`,
+    });
+    notified.add(key);
+    changed = true;
+  }
+  if (changed) persistStringSet(NOTIFIED_NEWS_KEY, notified);
 }
 
 type StoredWatchlistItem = {
@@ -591,7 +699,7 @@ function generateCandles(basePrice: number): Candle[] {
   return candles;
 }
 
-function mockAnalyze(ticker: string, request: AnalyzeRequest): AnalyzeResponse | null {
+function mockAnalyze(ticker: string, request: WireRequest): AnalyzeResponse | null {
   const company = companies[ticker];
   if (!company) return null;
 
@@ -614,17 +722,25 @@ function mockAnalyze(ticker: string, request: AnalyzeRequest): AnalyzeResponse |
   if (changePct < -2) technical -= 12;
   technical = Math.max(25, Math.min(95, technical));
 
-  let risk = 65;
-  if (Math.abs(changePct) > 2) risk -= 12;
-  if (m.debtToEquity !== null && m.debtToEquity > 1.5) risk -= 10;
-  if (request.risk_profile === "Conservative") risk += 5;
-  if (request.risk_profile === "Aggressive") risk -= 8;
-  risk = Math.max(30, Math.min(90, risk));
+  let marketIntel = 65;
+  if (Math.abs(changePct) > 2) marketIntel -= 12;
+  if (m.debtToEquity !== null && m.debtToEquity > 1.5) marketIntel -= 10;
+  if (request.risk_profile === "conservative") marketIntel += 5;
+  if (request.risk_profile === "aggressive") marketIntel -= 8;
+  marketIntel = Math.max(30, Math.min(90, marketIntel));
 
-  const average = (fundamental + technical + risk) / 3;
+  const average = (fundamental + technical + marketIntel) / 3;
   const recommendation: AnalyzeResponse["recommendation"] =
     average >= 72 ? "BUY" : average >= 55 ? "HOLD" : "SELL";
   const confidence = Math.min(95, Math.round(average + 6));
+
+  const volatility = Math.abs(changePct);
+  const riskLevel: AnalyzeResponse["risk_level"] =
+    volatility > 2.5 || (m.debtToEquity !== null && m.debtToEquity > 1.8)
+      ? "High"
+      : volatility > 1 || (m.debtToEquity !== null && m.debtToEquity > 1.1)
+        ? "Medium"
+        : "Low";
 
   const reasons: string[] = [];
   if (fundamental > 70 && m.roe) {
@@ -641,28 +757,60 @@ function mockAnalyze(ticker: string, request: AnalyzeRequest): AnalyzeResponse |
   if (technical < 55) {
     reasons.push("Momentum harga melemah dalam periode terakhir");
   }
-  if (risk > 70) {
+  if (marketIntel > 70) {
     reasons.push(
-      `Profil risiko ${request.risk_profile.toLowerCase()} cocok dengan volatilitas terkini`,
+      `Profil risiko ${request.risk_profile} cocok dengan volatilitas terkini`,
     );
   }
-  if (risk < 55) {
+  if (marketIntel < 55) {
     reasons.push("Volatilitas tinggi, waspada terhadap fluktuasi jangka pendek");
   }
-  if (request.investment_goal === "Long Term" && recommendation === "BUY") {
+  if (request.investment_goal === "long_term" && recommendation === "BUY") {
     reasons.push("Konsisten dengan tujuan jangka panjang");
   }
   if (reasons.length === 0) {
     reasons.push("Sinyal campuran, tunggu konfirmasi lanjutan");
   }
 
+  const trend = changePct > 0.5 ? "uptrend" : changePct < -0.5 ? "downtrend" : "neutral";
+  const rsi = Math.max(5, Math.min(95, Math.round(50 + changePct * 5)));
+  const relatedNews = newsItems
+    .filter((item) => item.tickers.includes(ticker))
+    .slice(0, 3)
+    .map((item) => item.title);
+
+  const finalReasoning =
+    `${recommendation} dipilih karena skor gabungan multi-agent ${confidence} dari 100. ` +
+    `Keputusan menimbang kekuatan fundamental (${fundamental}), teknikal (${technical}), ` +
+    `dan intelijen pasar (${marketIntel}), disesuaikan dengan profil risiko ${request.risk_profile}.`;
+
+  const whatCouldChange = {
+    BUY: "Verdict bisa turun ke HOLD jika momentum teknikal melemah, pertumbuhan laba meleset, atau risiko pasar naik signifikan.",
+    HOLD: "Verdict bisa naik ke BUY jika momentum teknikal menguat dan pertumbuhan pendapatan kuartal berikutnya melampaui ekspektasi.",
+    SELL: "Verdict bisa membaik ke HOLD jika valuasi menjadi lebih menarik, risiko utama menurun, dan fundamental pulih jelas.",
+  }[recommendation];
+
   return {
     recommendation,
     confidence,
     fundamental_score: fundamental,
     technical_score: technical,
-    risk_score: risk,
+    market_intelligence_score: marketIntel,
     reason: reasons.slice(0, 4),
+    company_name: company.name,
+    sector: company.sector,
+    risk_level: riskLevel,
+    final_reasoning: finalReasoning,
+    what_could_change: whatCouldChange,
+    market_data: {
+      price: company.price.current,
+      changePercent1y: Number((changePct * 12).toFixed(2)),
+      pe: m.peRatio ?? undefined,
+      roe: m.roe ?? undefined,
+      rsi,
+      trend,
+      news: relatedNews.length > 0 ? relatedNews : undefined,
+    },
   };
 }
 
@@ -694,7 +842,7 @@ function liveQuote(seedKey: string, base: number) {
   return { spark, current, change, changePercent };
 }
 
-function liveIndices(): MarketIndex[] {
+export function liveIndices(): MarketIndex[] {
   return indexBases.map((index) => {
     const quote = liveQuote(index.symbol, index.value);
     return {
@@ -868,7 +1016,7 @@ function localizedNews(items: NewsItem[]): NewsItem[] {
   });
 }
 
-function buildMovers(): { gainers: Mover[]; losers: Mover[] } {
+export function buildMovers(): { gainers: Mover[]; losers: Mover[] } {
   const movers: Mover[] = Object.values(companies).map((company) => {
     const quote = liveQuote(company.ticker, company.price.current);
     return {
@@ -903,6 +1051,17 @@ export async function mockApiFetch<T>(
     return user as T;
   }
 
+  if (path === "/api/user" && method === "PATCH") {
+    const current = storedUser();
+    if (!current) {
+      throw new ApiError("Belum masuk", 401);
+    }
+    const updates = body as Partial<User>;
+    const updated: User = { ...current, ...updates };
+    persistUser(updated);
+    return updated as T;
+  }
+
   if (path === "/login" && method === "POST") {
     if (input.password === "salah") {
       throw new ApiError("Data yang diberikan tidak valid", 422, {
@@ -913,6 +1072,8 @@ export async function mockApiFetch<T>(
       id: 1,
       name: "Clay",
       email: input.email ?? "clay@example.com",
+      notifyPriceAlert: true,
+      notifyNewsDigest: true,
     };
     persistUser(user);
     return user as T;
@@ -928,6 +1089,8 @@ export async function mockApiFetch<T>(
       id: 1,
       name: input.name ?? "Pengguna baru",
       email: input.email ?? "baru@example.com",
+      notifyPriceAlert: true,
+      notifyNewsDigest: true,
     };
     persistUser(user);
     return user as T;
@@ -1026,12 +1189,44 @@ export async function mockApiFetch<T>(
       };
       const others = storedAlerts().filter((item) => item.ticker !== ticker);
       persistAlerts([...others, alert]);
+      const fired = storedStringSet(FIRED_ALERTS_KEY);
+      if (fired.delete(ticker)) persistStringSet(FIRED_ALERTS_KEY, fired);
       return alert as T;
     }
     if (method === "DELETE") {
       persistAlerts(storedAlerts().filter((item) => item.ticker !== ticker));
+      const fired = storedStringSet(FIRED_ALERTS_KEY);
+      if (fired.delete(ticker)) persistStringSet(FIRED_ALERTS_KEY, fired);
       return undefined as T;
     }
+  }
+
+  if (path === "/api/notifications" && method === "GET") {
+    const user = storedUser();
+    if (!user) {
+      throw new ApiError("Belum masuk", 401);
+    }
+    syncAlertNotifications(user);
+    syncNewsNotifications(user);
+    return [...storedNotifications()].sort((a, b) =>
+      b.createdAt.localeCompare(a.createdAt),
+    ) as T;
+  }
+
+  const notificationReadMatch = path.match(/^\/api\/notifications\/(\d+)\/read$/);
+  if (notificationReadMatch && method === "PATCH") {
+    const id = Number(notificationReadMatch[1]);
+    persistNotifications(
+      storedNotifications().map((item) =>
+        item.id === id ? { ...item, read: true } : item,
+      ),
+    );
+    return undefined as T;
+  }
+
+  if (path === "/api/notifications/read-all" && method === "POST") {
+    persistNotifications(storedNotifications().map((item) => ({ ...item, read: true })));
+    return undefined as T;
   }
 
   if (path === "/api/market" && method === "GET") {
@@ -1061,10 +1256,19 @@ export async function mockApiFetch<T>(
 
   if (path === "/api/analyze" && method === "POST") {
     await delay(2400);
-    const params = body as AnalyzeRequest;
-    const result = mockAnalyze(params.ticker.toUpperCase(), params);
+    const params = body as WireRequest;
+    const ticker = params.ticker.toUpperCase();
+    const result = mockAnalyze(ticker, params);
     if (!result) {
       throw new ApiError(`Saham ${params.ticker} tidak ditemukan`, 404);
+    }
+    if (storedUser()) {
+      pushNotification({
+        type: "analysis_done",
+        ticker,
+        recommendation: result.recommendation,
+        href: `/companies/${ticker}`,
+      });
     }
     return result as T;
   }

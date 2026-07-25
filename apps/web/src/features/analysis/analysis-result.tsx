@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { BulbIcon, CheckIcon, PlusIcon, StarIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { MarketSnapshot } from "@/features/analysis/market-snapshot";
 import { ReasoningTrail } from "@/features/analysis/reasoning-trail";
 import { ScoreCards } from "@/features/analysis/score-cards";
 import { VerdictCard } from "@/features/analysis/verdict-card";
@@ -28,6 +29,8 @@ export function AnalysisResult({ result, ticker, companyName, onReset }: Props) 
 
       <ScoreCards result={result} />
 
+      {result.market_data ? <MarketSnapshot data={result.market_data} /> : null}
+
       <div
         className="animate-stagger rounded-card border border-line bg-surface p-6"
         style={{ animationDelay: "2000ms" }}
@@ -45,6 +48,27 @@ export function AnalysisResult({ result, ticker, companyName, onReset }: Props) 
           ))}
         </ul>
       </div>
+
+      {result.final_reasoning || result.what_could_change ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          {result.final_reasoning ? (
+            <div className="rounded-card border border-line bg-surface p-6">
+              <h2 className="text-sm text-ink">{t("decisionSummary")}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-ink-muted">
+                {result.final_reasoning}
+              </p>
+            </div>
+          ) : null}
+          {result.what_could_change ? (
+            <div className="rounded-card border border-brass/40 bg-brass-bg/30 p-6">
+              <h2 className="text-sm text-ink">{t("whatCouldChange")}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-ink-muted">
+                {result.what_could_change}
+              </p>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       <div
         className="animate-stagger flex flex-wrap gap-3 pt-2"

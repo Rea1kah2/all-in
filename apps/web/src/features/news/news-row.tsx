@@ -13,7 +13,7 @@ import {
   SearchIcon,
   TrendingUpIcon,
 } from "@/components/icons";
-import { cn } from "@/lib/utils";
+import { cn, relativeTime } from "@/lib/utils";
 import { type NewsCategory, type NewsItem, newsImagePath } from "@/types/news";
 
 const categoryStyle: Record<
@@ -65,15 +65,6 @@ export function NewsImage({
       )}
     </div>
   );
-}
-
-function relativeTime(iso: string, locale: string) {
-  const diffMinutes = Math.round((new Date(iso).getTime() - Date.now()) / 60_000);
-  const formatter = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
-  if (Math.abs(diffMinutes) < 60) return formatter.format(diffMinutes, "minute");
-  const diffHours = Math.round(diffMinutes / 60);
-  if (Math.abs(diffHours) < 24) return formatter.format(diffHours, "hour");
-  return formatter.format(Math.round(diffHours / 24), "day");
 }
 
 function Meta({ item, locale }: { item: NewsItem; locale: string }) {

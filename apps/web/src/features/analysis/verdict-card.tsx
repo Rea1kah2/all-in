@@ -2,8 +2,16 @@
 
 import { useTranslations } from "next-intl";
 import { TrendingDownIcon, TrendingUpIcon } from "@/components/icons";
+import { Badge } from "@/components/ui/badge";
+import { isMockPath } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { AnalyzeResponse } from "@/types/analysis";
+
+const riskLevelVariant = {
+  Low: "bull",
+  Medium: "hold",
+  High: "bear",
+} as const;
 
 const verdictStyles = {
   BUY: {
@@ -34,6 +42,7 @@ export function VerdictCard({
 }) {
   const t = useTranslations("analysis");
   const tVerdict = useTranslations("verdict");
+  const tRisk = useTranslations("analysis.riskLevel");
   const style = verdictStyles[result.recommendation];
   const isBuy = result.recommendation === "BUY";
   const isSell = result.recommendation === "SELL";
@@ -47,6 +56,12 @@ export function VerdictCard({
       )}
       style={{ animationDelay: "0ms" }}
     >
+      {isMockPath("/api/analyze") ? (
+        <Badge variant="neutral" className="mb-4">
+          {t("simulatedBadge")}
+        </Badge>
+      ) : null}
+
       <div className="flex flex-wrap items-start justify-between gap-6">
         <div className="space-y-2">
           <p className="font-mono text-xs text-ink-muted">
@@ -63,6 +78,21 @@ export function VerdictCard({
             {tVerdict(`${result.recommendation}.label`)},{" "}
             {tVerdict(`${result.recommendation}.description`)}
           </p>
+
+          {result.sector || result.risk_level ? (
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              {result.sector ? (
+                <span className="rounded-badge bg-surface/70 px-2 py-0.5 text-xs text-ink-muted">
+                  {t("sector")}, {result.sector}
+                </span>
+              ) : null}
+              {result.risk_level ? (
+                <Badge variant={riskLevelVariant[result.risk_level]}>
+                  {t("riskLevelLabel")}, {tRisk(result.risk_level)}
+                </Badge>
+              ) : null}
+            </div>
+          ) : null}
         </div>
 
         <div className="text-right">

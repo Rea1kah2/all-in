@@ -7,7 +7,7 @@
   },
   "userMenu": {
     "open": "Open account menu",
-    "profile": "Investment profile",
+    "profile": "Profile",
     "settings": "Settings",
     "logout": "Log out"
   },
@@ -130,6 +130,14 @@
     "loadingTitle": "Analyzing {ticker}",
     "loadingBody": "The Data Collector is gathering data, three AI Agents will assess and conclude",
     "confidence": "Confidence",
+    "simulatedBadge": "Simulated data, not from a real AI backend yet",
+    "sector": "Sector",
+    "riskLevelLabel": "Risk level",
+    "riskLevel": {
+      "Low": "Low",
+      "Medium": "Medium",
+      "High": "High"
+    },
     "trailTitle": "How it thinks",
     "trail": {
       "collectorTitle": "Data Collector",
@@ -138,9 +146,9 @@
       "agent1Title": "AI Agent 1, Fundamental and Technical",
       "agent1Role": "Assesses business health and price structure",
       "agent1Output": "Fundamental {fundamental}, Technical {technical}",
-      "agent2Title": "AI Agent 2, Risk and Sentiment",
-      "agent2Role": "Weighs volatility and market sentiment",
-      "agent2Output": "Risk score {risk}",
+      "agent2Title": "AI Agent 2, Market Intelligence",
+      "agent2Role": "Weighs news sentiment, volatility, and market context",
+      "agent2Output": "Market Intelligence score {score}",
       "agent3Title": "AI Agent 3, Decision",
       "agent3Role": "Consolidates into a final recommendation",
       "agent3Output": "Recommendation {recommendation}, confidence {confidence}%"
@@ -150,8 +158,18 @@
       "fundamentalHint": "Business health and valuation",
       "technicalLabel": "Technical",
       "technicalHint": "Price structure and momentum",
-      "riskLabel": "Risk",
-      "riskHint": "Fit with your risk profile"
+      "marketIntelLabel": "Market Intelligence",
+      "marketIntelHint": "News sentiment and market context"
+    },
+    "decisionSummary": "Decision summary",
+    "whatCouldChange": "What could change the verdict",
+    "snapshot": {
+      "title": "Market snapshot",
+      "price": "Price",
+      "rsi": "RSI",
+      "trend": "Trend",
+      "change1y": "1Y change",
+      "news": "Related news"
     },
     "reasons": "Key reasons",
     "analyzeAnother": "Analyze another stock",
@@ -300,9 +318,15 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Account preferences and theme options will arrive once the auth backend is ready.",
-    "profileTitle": "Investment Profile",
-    "profileSubtitle": "Investment horizon, risk profile, and other preferences will arrive once the auth backend is ready."
+    "subtitle": "Manage the notification preferences for your account.",
+    "profileTitle": "Profile",
+    "profileSubtitle": "Update the name and email connected to your account.",
+    "save": "Save",
+    "saved": "Saved",
+    "notifyPriceAlert": "Price alert notifications",
+    "notifyPriceAlertHint": "Get notified when a stock in your watchlist reaches its target price.",
+    "notifyNewsDigest": "News notifications",
+    "notifyNewsDigestHint": "Get notified when new articles about a stock in your watchlist are published."
   },
   "watchlistStar": {
     "save": "Save",
@@ -341,5 +365,16 @@
     "remove": "Remove alert",
     "active": "Alert active",
     "current": "Current price {price}"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "open": "Open notifications",
+    "empty": "No notifications yet",
+    "markAllRead": "Mark all read",
+    "priceAlert": "Price alert for {ticker} triggered, price {condition} {price}",
+    "conditionAbove": "rose to or above",
+    "conditionBelow": "fell to or below",
+    "analysisDone": "AI analysis for {ticker} is ready, recommendation {recommendation}",
+    "news": "New article about {ticker}"
   }
 }

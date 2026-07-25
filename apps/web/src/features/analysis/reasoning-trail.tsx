@@ -42,7 +42,7 @@ export function ReasoningTrail({ result }: { result: AnalyzeResponse }) {
     {
       title: tTrail("agent2Title"),
       role: tTrail("agent2Role"),
-      output: tTrail("agent2Output", { risk: result.risk_score }),
+      output: tTrail("agent2Output", { score: result.market_intelligence_score }),
       Icon: NewsIcon,
     },
     {

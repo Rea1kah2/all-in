@@ -44,15 +44,47 @@ function ensureCsrfCookie() {
   return csrfPromise;
 }
 
+function isLocalLivePath(path: string): boolean {
+  return env.NEXT_PUBLIC_LOCAL_LIVE_PATHS.some((prefix) => path.startsWith(prefix));
+}
+
+export function isMockPath(path: string): boolean {
+  if (isLocalLivePath(path)) {
+    return false;
+  }
+  if (!env.NEXT_PUBLIC_ENABLE_MOCK_API) {
+    return false;
+  }
+  return !env.NEXT_PUBLIC_LIVE_API_PATHS.some((prefix) => path.startsWith(prefix));
+}
+
 export async function apiFetch<T>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  if (env.NEXT_PUBLIC_ENABLE_MOCK_API) {
+  const method = options.method ?? "GET";
+
+  if (isLocalLivePath(path)) {
+    const response = await fetch(path, {
+      method,
+      headers: { Accept: "application/json" },
+      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+    });
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      const message =
+        payload && typeof payload === "object" && "message" in payload
+          ? String(payload.message)
+          : "Terjadi kesalahan pada server";
+      throw new ApiError(message, response.status);
+    }
+    return payload as T;
+  }
+
+  if (isMockPath(path)) {
     return mockApiFetch<T>(path, options.method ?? "GET", options.body);
   }
 
-  const method = options.method ?? "GET";
   const headers: Record<string, string> = { Accept: "application/json" };
 
   if (options.body !== undefined) {

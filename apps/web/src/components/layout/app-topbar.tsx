@@ -9,6 +9,7 @@ import { UserMenu } from "@/components/layout/user-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { LocaleToggle } from "@/features/i18n/locale-toggle";
+import { NotificationBell } from "@/features/notifications/notification-bell";
 
 export function AppTopbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
   const t = useTranslations("app");
@@ -35,6 +36,7 @@ export function AppTopbar({ onToggleSidebar }: { onToggleSidebar: () => void }) 
 
         <div className="flex items-center gap-2.5">
           <MarketStatus />
+          <NotificationBell />
           <ThemeToggle />
           <span className="hidden sm:inline-flex">
             <LocaleToggle />

@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import {
   ArrowRightIcon,
   BarChartIcon,
@@ -21,7 +22,6 @@ import {
   TrendingDownIcon,
   TrendingUpIcon,
 } from "@/components/icons";
-import { getTranslations } from "next-intl/server";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

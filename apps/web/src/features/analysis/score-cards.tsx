@@ -37,9 +37,9 @@ export function ScoreCards({ result }: { result: AnalyzeResponse }) {
       value: result.technical_score,
     },
     {
-      label: t("riskLabel"),
-      hint: t("riskHint"),
-      value: result.risk_score,
+      label: t("marketIntelLabel"),
+      hint: t("marketIntelHint"),
+      value: result.market_intelligence_score,
     },
   ];
 

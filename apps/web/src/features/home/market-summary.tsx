@@ -49,7 +49,7 @@ export function MarketSummary() {
               >
                 <p className="text-xs text-ink-muted">{index.name}</p>
                 <div className="mt-2 flex items-end justify-between gap-3">
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-mono text-2xl text-ink">
                       {formatIndexValue(index.value)}
                     </p>
@@ -67,10 +67,13 @@ export function MarketSummary() {
                       {formatPercent(index.changePercent)}
                     </p>
                   </div>
-                  <Sparkline
-                    data={index.spark}
-                    className={cn("shrink-0", positive ? "text-bull" : "text-bear")}
-                  />
+                  <div className="h-7 w-16 shrink-0 sm:w-20 md:w-24">
+                    <Sparkline
+                      data={index.spark}
+                      responsive
+                      className={positive ? "text-bull" : "text-bear"}
+                    />
+                  </div>
                 </div>
               </div>
             );

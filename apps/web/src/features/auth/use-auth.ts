@@ -52,6 +52,21 @@ export function useRegister() {
   });
 }
 
+export function useUpdateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (
+      input: Partial<
+        Pick<User, "name" | "email" | "notifyPriceAlert" | "notifyNewsDigest">
+      >,
+    ) => apiFetch<User>("/api/user", { method: "PATCH", body: input }),
+    onSuccess: (user) => {
+      queryClient.setQueryData(sessionKey, user);
+    },
+  });
+}
+
 export function useLogout() {
   const queryClient = useQueryClient();
   const router = useRouter();

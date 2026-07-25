@@ -4,9 +4,18 @@ export const userSchema = z.object({
   id: z.number(),
   name: z.string(),
   email: z.string().email(),
+  notifyPriceAlert: z.boolean(),
+  notifyNewsDigest: z.boolean(),
 });
 
 export type User = z.infer<typeof userSchema>;
+
+export const updateProfileSchema = z.object({
+  name: z.string().min(2, "Nama minimal 2 karakter"),
+  email: z.string().min(1, "Email wajib diisi").email("Format email tidak valid"),
+});
+
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 
 export const loginSchema = z.object({
   email: z.string().min(1, "Email wajib diisi").email("Format email tidak valid"),

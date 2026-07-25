@@ -7,7 +7,7 @@
   },
   "userMenu": {
     "open": "Buka menu akun",
-    "profile": "Profil investasi",
+    "profile": "Profil",
     "settings": "Pengaturan",
     "logout": "Keluar"
   },
@@ -130,6 +130,14 @@
     "loadingTitle": "Menganalisis {ticker}",
     "loadingBody": "Data Collector mengumpulkan data, tiga AI Agent akan menilai dan menyimpulkan",
     "confidence": "Keyakinan",
+    "simulatedBadge": "Data simulasi, belum dari backend AI nyata",
+    "sector": "Sektor",
+    "riskLevelLabel": "Tingkat risiko",
+    "riskLevel": {
+      "Low": "Rendah",
+      "Medium": "Sedang",
+      "High": "Tinggi"
+    },
     "trailTitle": "Cara berpikir",
     "trail": {
       "collectorTitle": "Data Collector",
@@ -138,9 +146,9 @@
       "agent1Title": "AI Agent 1, Fundamental dan Technical",
       "agent1Role": "Menilai kesehatan bisnis dan struktur harga",
       "agent1Output": "Fundamental {fundamental}, Technical {technical}",
-      "agent2Title": "AI Agent 2, Risk dan Sentiment",
-      "agent2Role": "Menimbang volatilitas dan sentimen pasar",
-      "agent2Output": "Risk score {risk}",
+      "agent2Title": "AI Agent 2, Market Intelligence",
+      "agent2Role": "Menimbang sentimen berita, volatilitas, dan konteks pasar",
+      "agent2Output": "Market Intelligence score {score}",
       "agent3Title": "AI Agent 3, Decision",
       "agent3Role": "Mengonsolidasi jadi rekomendasi akhir",
       "agent3Output": "Rekomendasi {recommendation}, keyakinan {confidence}%"
@@ -150,8 +158,18 @@
       "fundamentalHint": "Kesehatan bisnis dan valuasi",
       "technicalLabel": "Technical",
       "technicalHint": "Struktur harga dan momentum",
-      "riskLabel": "Risk",
-      "riskHint": "Kesesuaian dengan profil risiko"
+      "marketIntelLabel": "Market Intelligence",
+      "marketIntelHint": "Sentimen berita dan konteks pasar"
+    },
+    "decisionSummary": "Ringkasan keputusan",
+    "whatCouldChange": "Yang bisa mengubah verdict",
+    "snapshot": {
+      "title": "Snapshot pasar",
+      "price": "Harga",
+      "rsi": "RSI",
+      "trend": "Tren",
+      "change1y": "Perubahan 1 tahun",
+      "news": "Berita terkait"
     },
     "reasons": "Alasan utama",
     "analyzeAnother": "Analisis saham lain",
@@ -300,9 +318,15 @@
   },
   "settings": {
     "title": "Pengaturan",
-    "subtitle": "Preferensi akun dan tema akan hadir setelah backend auth siap.",
-    "profileTitle": "Profil Investasi",
-    "profileSubtitle": "Horizon investasi, profil risiko, dan preferensi lainnya akan hadir setelah backend auth siap."
+    "subtitle": "Kelola preferensi notifikasi untuk akun Anda.",
+    "profileTitle": "Profil",
+    "profileSubtitle": "Perbarui nama dan email yang terhubung dengan akun Anda.",
+    "save": "Simpan",
+    "saved": "Tersimpan",
+    "notifyPriceAlert": "Notifikasi alert harga",
+    "notifyPriceAlertHint": "Dapatkan notifikasi saat saham di watchlist Anda mencapai target harga.",
+    "notifyNewsDigest": "Notifikasi berita",
+    "notifyNewsDigestHint": "Dapatkan notifikasi saat ada berita baru terkait saham di watchlist Anda."
   },
   "watchlistStar": {
     "save": "Simpan",
@@ -341,5 +365,16 @@
     "remove": "Hapus alert",
     "active": "Alert aktif",
     "current": "Harga sekarang {price}"
+  },
+  "notifications": {
+    "title": "Notifikasi",
+    "open": "Buka notifikasi",
+    "empty": "Belum ada notifikasi",
+    "markAllRead": "Tandai semua dibaca",
+    "priceAlert": "Alert harga {ticker} terpicu, harga {condition} {price}",
+    "conditionAbove": "naik ke atau di atas",
+    "conditionBelow": "turun ke atau di bawah",
+    "analysisDone": "Analisis AI untuk {ticker} selesai, rekomendasi {recommendation}",
+    "news": "Berita baru terkait {ticker}"
   }
 }

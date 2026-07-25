@@ -5,9 +5,16 @@ type SparklineProps = {
   width?: number;
   height?: number;
   className?: string;
+  responsive?: boolean;
 };
 
-export function Sparkline({ data, width = 96, height = 28, className }: SparklineProps) {
+export function Sparkline({
+  data,
+  width = 96,
+  height = 28,
+  className,
+  responsive = false,
+}: SparklineProps) {
   if (data.length < 2) {
     return null;
   }
@@ -28,11 +35,10 @@ export function Sparkline({ data, width = 96, height = 28, className }: Sparklin
     <svg
       aria-hidden="true"
       viewBox={`0 0 ${width} ${height}`}
-      width={width}
-      height={height}
+      {...(responsive ? {} : { width, height })}
       preserveAspectRatio="none"
       fill="none"
-      className={cn("overflow-visible", className)}
+      className={cn("overflow-visible", responsive && "h-full w-full", className)}
     >
       <polyline
         points={points}

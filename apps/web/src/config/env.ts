@@ -12,12 +12,32 @@ export const env = createEnv({
       .enum(["true", "false"])
       .default("false")
       .transform((value) => value === "true"),
+    NEXT_PUBLIC_LIVE_API_PATHS: z
+      .string()
+      .default("")
+      .transform((value) =>
+        value
+          .split(",")
+          .map((path) => path.trim())
+          .filter(Boolean),
+      ),
+    NEXT_PUBLIC_LOCAL_LIVE_PATHS: z
+      .string()
+      .default("/api/market")
+      .transform((value) =>
+        value
+          .split(",")
+          .map((path) => path.trim())
+          .filter(Boolean),
+      ),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_ENABLE_MOCK_API: process.env.NEXT_PUBLIC_ENABLE_MOCK_API,
+    NEXT_PUBLIC_LIVE_API_PATHS: process.env.NEXT_PUBLIC_LIVE_API_PATHS,
+    NEXT_PUBLIC_LOCAL_LIVE_PATHS: process.env.NEXT_PUBLIC_LOCAL_LIVE_PATHS,
   },
   emptyStringAsUndefined: true,
 });
