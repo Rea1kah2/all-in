@@ -20,6 +20,7 @@ const knownErrorCodes = [
   "ticker_not_found",
   "market_data_unavailable",
   "ai_unavailable",
+  "ai_quota_exceeded",
   "rate_limited",
   "network_error",
 ] as const;

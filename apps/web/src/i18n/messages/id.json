@@ -135,6 +135,7 @@
       "ticker_not_found": "Ticker tidak ditemukan. Periksa kembali penulisannya.",
       "market_data_unavailable": "Data pasar sedang tidak tersedia. Coba lagi sebentar lagi.",
       "ai_unavailable": "Layanan analisis AI sedang tidak tersedia. Coba lagi sebentar lagi.",
+      "ai_quota_exceeded": "Jatah analisis AI hari ini sudah habis. Kuota kembali setelah tengah malam waktu Pacific, sekitar pukul 14.00 WIB.",
       "rate_limited": "Terlalu banyak permintaan. Tunggu sebentar sebelum menganalisis lagi.",
       "network_error": "Tidak bisa terhubung ke layanan analisis. Periksa koneksi Anda."
     },

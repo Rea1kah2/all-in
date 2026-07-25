@@ -66,6 +66,7 @@ export async function runMarketIntelligenceAgent(
   ].join("\n");
 
   return askGeminiJson(marketIntelligenceResultSchema, systemPrompt, userPrompt, {
-    thinkingBudget: 0,
+    tier: "light",
+    label: "market-intelligence",
   });
 }

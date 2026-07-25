@@ -24,4 +24,6 @@ pnpm-debug.log*
 coverage
 .nyc_output
 
+.cache
+
 .idea

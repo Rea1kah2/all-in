@@ -22,6 +22,14 @@ export function upstreamDataError(): ServiceError {
   );
 }
 
+export function aiQuotaExceeded(): ServiceError {
+  return new ServiceError(
+    "Jatah analisis AI hari ini sudah habis, coba lagi setelah kuota harian direset",
+    429,
+    "ai_quota_exceeded",
+  );
+}
+
 export function aiUnavailable(): ServiceError {
   return new ServiceError(
     "Layanan analisis AI sedang tidak tersedia, coba lagi sebentar lagi",

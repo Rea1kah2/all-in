@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { marketingNav, site } from "@/config/site";
+import { LocaleToggle } from "@/features/i18n/locale-toggle";
 
 export async function MarketingHeader() {
   const t = await getTranslations("marketing");
@@ -28,6 +29,7 @@ export async function MarketingHeader() {
         </nav>
 
         <div className="flex items-center gap-2.5">
+          <LocaleToggle />
           <ThemeToggle />
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
             <Link href="/login">{t("login")}</Link>

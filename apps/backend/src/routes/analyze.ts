@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import {
   type AnalyzeResponse,
   analyzeResponseSchema,
@@ -11,9 +12,13 @@ import { TtlCache } from "../lib/cache.ts";
 import { collectMarketData } from "../lib/data-collector.ts";
 import { env } from "../lib/env.ts";
 import { ServiceError } from "../lib/errors.ts";
+import { cacheDir } from "../lib/paths.ts";
 import { computeTechnicalScore } from "../lib/technical-indicators.ts";
 
-const cache = new TtlCache<AnalyzeResponse>(env.ANALYSIS_CACHE_TTL_MS);
+const cache = new TtlCache<AnalyzeResponse>(
+  env.ANALYSIS_CACHE_TTL_MS,
+  join(cacheDir, "analysis.json"),
+);
 
 export const analyzeRouter = Router();
 

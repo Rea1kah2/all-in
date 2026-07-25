@@ -135,6 +135,7 @@
       "ticker_not_found": "Ticker not found. Check the spelling and try again.",
       "market_data_unavailable": "Market data is unavailable right now. Try again shortly.",
       "ai_unavailable": "The AI analysis service is unavailable right now. Try again shortly.",
+      "ai_quota_exceeded": "Today's AI analysis quota is used up. It resets at midnight Pacific time.",
       "rate_limited": "Too many requests. Wait a moment before analyzing again.",
       "network_error": "Cannot reach the analysis service. Check your connection."
     },

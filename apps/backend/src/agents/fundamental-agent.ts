@@ -56,6 +56,7 @@ export async function runFundamentalAgent(
   ].join("\n");
 
   return askGeminiJson(fundamentalResultSchema, systemPrompt, userPrompt, {
-    thinkingBudget: 0,
+    tier: "light",
+    label: "fundamental",
   });
 }

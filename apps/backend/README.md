@@ -66,23 +66,61 @@ curl http://localhost:8081/health
 |---|---|---|
 | `PORT` | `8081` | Port server |
 | `GEMINI_API_KEY` | wajib | Key dari Google AI Studio |
-| `GEMINI_MODEL` | `gemini-2.5-flash` | Ganti ke model lain tanpa ubah kode |
+| `GEMINI_MODEL` | `gemini-3.5-flash` | Model penuh, dipakai Decision Agent |
+| `GEMINI_LIGHT_MODEL` | `gemini-3.5-flash-lite` | Model ringan, dipakai Fundamental dan Market Intelligence Agent |
+| `GEMINI_DAILY_CALL_LIMIT` | `18` | Batas panggilan Gemini per model per hari |
 | `ALLOWED_ORIGIN` | `http://localhost:3000` | Origin frontend, pisahkan dengan koma untuk banyak origin |
 | `ANALYSIS_CACHE_TTL_MS` | `600000` | Umur cache hasil analisis, isi `0` untuk mematikan |
 | `RATE_LIMIT_PER_MINUTE` | `5` | Batas request `/api` per IP per menit |
 
-Satu analisis memakai **tiga panggilan Gemini**, jadi `RATE_LIMIT_PER_MINUTE` bernilai `5` berarti
-sampai 15 panggilan Gemini per menit per IP. Sesuaikan angka ini dengan kuota RPM key kamu,
-jangan menaikkannya tanpa mengecek kuota lebih dulu.
-
 `.env` tidak pernah ikut commit. Jangan pernah menaruh key asli di `.env.example`.
+
+### Dua tingkat model, dan kenapa itu penting
+
+Agent yang hanya **menafsirkan** angka yang sudah dihitung memakai model ringan dengan
+`thinkingLevel: MINIMAL`. Agent yang benar benar **memutuskan** memakai model penuh dengan
+`thinkingLevel: LOW`. Kalau jatah satu model habis, tingkat itu otomatis jatuh ke model
+satunya.
+
+Ini bukan sekadar soal biaya. Kuota Gemini dihitung **per project per model per hari**, jadi
+membagi beban ke dua model berarti satu analisis memakai 2 jatah model ringan dan 1 jatah model
+penuh, bukan 3 jatah dari satu model.
+
+Ukuran nyata satu analisis pada `gemini-3.5-flash` dan `gemini-3.5-flash-lite`: sekitar **1.389
+token masuk dan 749 token keluar**, selesai dalam **6 detik**. Pada tarif berbayar Flash saat
+ini, itu sekitar **$0,0023 per analisis**.
+
+### Batas kuota
+
+Free tier Gemini adalah **20 permintaan per hari per model**, direset tengah malam waktu Pacific
+(sekitar 14:00 WIB), dan dihitung **per project, bukan per API key**, sehingga membuat key baru
+di project yang sama tidak mengembalikan kuota.
+
+`GEMINI_DAILY_CALL_LIMIT` adalah penghitung milik backend sendiri, sengaja di bawah 20. Kalau
+jatah habis, panggilan ditolak **sebelum** dikirim ke jaringan, jadi percobaan yang sudah pasti
+gagal tidak menghabiskan apa pun. Penghitungnya disimpan di `.cache/gemini-budget.json` supaya
+bertahan melewati restart, dan sisa jatahnya bisa dilihat kapan saja lewat `GET /health` tanpa
+membakar satu panggilan pun.
 
 ## Endpoint
 
 ### `GET /health`
 
 ```json
-{ "status": "ok", "service": "all-in-backend", "model": "gemini-2.5-flash", "time": "..." }
+{
+  "status": "ok",
+  "service": "all-in-backend",
+  "model": "gemini-3.5-flash",
+  "time": "...",
+  "quota": {
+    "pacificDate": "2026-07-25",
+    "dailyLimitPerModel": 18,
+    "models": [
+      { "model": "gemini-3.5-flash", "used": 1, "remaining": 17 },
+      { "model": "gemini-3.5-flash-lite", "used": 2, "remaining": 16 }
+    ]
+  }
+}
 ```
 
 ### `POST /api/analyze`
@@ -135,8 +173,12 @@ Status error:
 | `422` | validasi | Body tidak sesuai skema |
 | `404` | `ticker_not_found` | Ticker tidak dikenal Yahoo Finance |
 | `429` | `rate_limited` | Melewati batas per menit |
+| `429` | `ai_quota_exceeded` | Jatah harian Gemini habis di semua model |
 | `502` | `market_data_unavailable` | Yahoo Finance bermasalah |
 | `503` | `ai_unavailable` | Gemini gagal atau keluarannya tidak valid |
+
+`ai_quota_exceeded` sengaja dipisahkan dari `ai_unavailable` karena tindakan penggunanya berbeda:
+yang satu perlu menunggu sampai kuota direset, yang satu cukup mencoba lagi sebentar lagi.
 
 ## Menyambungkan ke frontend
 
@@ -180,16 +222,18 @@ yang murni khusus UI (label Title Case, `toWireRequest`) tetap tinggal di `apps/
 ## Catatan operasional
 
 - **Latensi**: satu analisis memanggil Yahoo Finance beberapa kali plus dua gelombang Gemini.
-  Terukur di pemakaian nyata sekitar 10 sampai 22 detik, tergantung ticker. Timeout per panggilan
-  Gemini 30 detik.
-- **Thinking budget**: Fundamental Agent dan Market Intelligence Agent berjalan dengan
-  `thinkingBudget: 0` karena keduanya hanya menafsirkan angka yang sudah dihitung. Decision Agent
-  dibiarkan memakai thinking dinamis bawaan model karena dia yang benar benar menimbang. Setelan
-  ini memangkas latensi dari sekitar 28 detik menjadi sekitar 12 detik tanpa menurunkan kualitas
-  keluaran.
-- **Cache**: hasil disimpan di memori per kombinasi ticker, profil risiko, horizon, dan bahasa.
-  Cukup untuk satu proses. Kalau nanti di-deploy multi instance dan cache perlu dibagi, itu
-  pekerjaan lanjutan (Redis dan sejenisnya).
+  Terukur sekitar 6 detik. Timeout per panggilan Gemini 30 detik.
+- **Cache**: hasil disimpan per kombinasi ticker, profil risiko, horizon, dan bahasa, di memori
+  sekaligus di `.cache/analysis.json` supaya bertahan melewati restart. Ini penting karena `tsx
+  watch` me-restart proses tiap kali kode disentuh, sementara satu entri cache mewakili tiga
+  panggilan Gemini yang sudah terpakai. Kalau nanti di-deploy multi instance dan cache perlu
+  dibagi, itu pekerjaan lanjutan (Redis dan sejenisnya).
+- **Model tidak selalu tersedia**: daftar dari `GET /v1beta/models` tidak menjamin model bisa
+  dipakai. `gemini-2.5-flash-lite` tetap muncul di daftar tetapi menolak dengan `404, no longer
+  available to new users`. Sebelum mengganti model di env, uji dulu dengan satu panggilan kecil.
+- **Perbedaan antar generasi model**: model 3.x memakai `thinkingLevel`, bukan `thinkingBudget`.
+  `gemini-3.5-flash-lite` menolak `thinkingBudget` dengan `400`. Kode ini memakai `thinkingLevel`
+  karena diterima kedua model, sehingga rantai fallback aman ke dua arah.
 - **Yahoo Finance tidak resmi**: skema respons bisa berubah sewaktu waktu. Data Collector sudah
   menormalkan simbol bertanda titik (`BRK.B` menjadi `BRK-B`) dan punya fallback per modul
   supaya satu modul bermasalah tidak mematikan seluruh analisis.

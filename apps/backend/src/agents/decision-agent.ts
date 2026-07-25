@@ -82,5 +82,8 @@ export async function runDecisionAgent(input: {
     "Berikan keputusan akhir dalam format JSON sesuai skema.",
   ].join("\n");
 
-  return askGeminiJson(decisionResultSchema, systemPrompt, userPrompt);
+  return askGeminiJson(decisionResultSchema, systemPrompt, userPrompt, {
+    tier: "heavy",
+    label: "decision",
+  });
 }
