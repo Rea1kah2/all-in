@@ -8,12 +8,30 @@ import { AnalysisLoading } from "@/features/analysis/analysis-loading";
 import { AnalysisResult } from "@/features/analysis/analysis-result";
 import { useAnalyze } from "@/features/analysis/use-analyze";
 import { useCompany } from "@/features/companies/use-company";
+import { ApiError } from "@/lib/api";
 import type { AnalyzeRequest, AnalyzeResponse } from "@/types/analysis";
 
 type ResultState = {
   data: AnalyzeResponse;
   ticker: string;
 };
+
+const knownErrorCodes = [
+  "ticker_not_found",
+  "market_data_unavailable",
+  "ai_unavailable",
+  "rate_limited",
+  "network_error",
+] as const;
+
+function errorMessageKey(error: unknown): string | null {
+  if (!(error instanceof ApiError) || !error.code) {
+    return null;
+  }
+  return knownErrorCodes.some((code) => code === error.code)
+    ? `errors.${error.code}`
+    : null;
+}
 
 export default function AnalysisPage() {
   const params = useSearchParams();
@@ -24,6 +42,9 @@ export default function AnalysisPage() {
   const [result, setResult] = useState<ResultState | null>(null);
   const analyze = useAnalyze();
   const company = useCompany(result?.ticker ?? "");
+
+  const errorKey = errorMessageKey(analyze.error);
+  const errorMessage = errorKey ? t(errorKey) : t("failed");
 
   const handleSubmit = (values: AnalyzeRequest) => {
     analyze.mutate(values, {
@@ -63,7 +84,7 @@ export default function AnalysisPage() {
 
           {analyze.isError ? (
             <p className="mt-4 rounded-badge bg-bear-bg px-3 py-2 text-xs text-bear">
-              {analyze.error instanceof Error ? analyze.error.message : t("failed")}
+              {errorMessage}
             </p>
           ) : null}
         </div>

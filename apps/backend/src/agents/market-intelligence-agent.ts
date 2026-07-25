@@ -65,5 +65,7 @@ export async function runMarketIntelligenceAgent(
     "Berikan penilaian intelijen pasar dalam format JSON sesuai skema.",
   ].join("\n");
 
-  return askGeminiJson(marketIntelligenceResultSchema, systemPrompt, userPrompt);
+  return askGeminiJson(marketIntelligenceResultSchema, systemPrompt, userPrompt, {
+    thinkingBudget: 0,
+  });
 }

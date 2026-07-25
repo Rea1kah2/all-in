@@ -55,5 +55,7 @@ export async function runFundamentalAgent(
     "Berikan penilaian fundamental dalam format JSON sesuai skema.",
   ].join("\n");
 
-  return askGeminiJson(fundamentalResultSchema, systemPrompt, userPrompt);
+  return askGeminiJson(fundamentalResultSchema, systemPrompt, userPrompt, {
+    thinkingBudget: 0,
+  });
 }

@@ -129,6 +129,15 @@
     "failed": "Analisis gagal, coba lagi",
     "loadingTitle": "Menganalisis {ticker}",
     "loadingBody": "Data Collector mengumpulkan data, tiga AI Agent akan menilai dan menyimpulkan",
+    "loadingElapsed": "{seconds} detik",
+    "loadingStageActive": "Sedang berjalan",
+    "errors": {
+      "ticker_not_found": "Ticker tidak ditemukan. Periksa kembali penulisannya.",
+      "market_data_unavailable": "Data pasar sedang tidak tersedia. Coba lagi sebentar lagi.",
+      "ai_unavailable": "Layanan analisis AI sedang tidak tersedia. Coba lagi sebentar lagi.",
+      "rate_limited": "Terlalu banyak permintaan. Tunggu sebentar sebelum menganalisis lagi.",
+      "network_error": "Tidak bisa terhubung ke layanan analisis. Periksa koneksi Anda."
+    },
     "confidence": "Keyakinan",
     "simulatedBadge": "Data simulasi, belum dari backend AI nyata",
     "sector": "Sektor",
@@ -142,7 +151,7 @@
     "trail": {
       "collectorTitle": "Data Collector",
       "collectorRole": "Bukan AI, mengumpulkan data pasar dan berita",
-      "collectorOutput": "Data terkumpul dari Yahoo Finance dan Google News",
+      "collectorOutput": "Data harga, fundamental, dan berita terkumpul dari Yahoo Finance",
       "agent1Title": "AI Agent 1, Fundamental dan Technical",
       "agent1Role": "Menilai kesehatan bisnis dan struktur harga",
       "agent1Output": "Fundamental {fundamental}, Technical {technical}",

@@ -69,7 +69,11 @@ curl http://localhost:8081/health
 | `GEMINI_MODEL` | `gemini-2.5-flash` | Ganti ke model lain tanpa ubah kode |
 | `ALLOWED_ORIGIN` | `http://localhost:3000` | Origin frontend, pisahkan dengan koma untuk banyak origin |
 | `ANALYSIS_CACHE_TTL_MS` | `600000` | Umur cache hasil analisis, isi `0` untuk mematikan |
-| `RATE_LIMIT_PER_MINUTE` | `20` | Batas request `/api` per IP per menit |
+| `RATE_LIMIT_PER_MINUTE` | `5` | Batas request `/api` per IP per menit |
+
+Satu analisis memakai **tiga panggilan Gemini**, jadi `RATE_LIMIT_PER_MINUTE` bernilai `5` berarti
+sampai 15 panggilan Gemini per menit per IP. Sesuaikan angka ini dengan kuota RPM key kamu,
+jangan menaikkannya tanpa mengecek kuota lebih dulu.
 
 `.env` tidak pernah ikut commit. Jangan pernah menaruh key asli di `.env.example`.
 
@@ -175,8 +179,14 @@ yang murni khusus UI (label Title Case, `toWireRequest`) tetap tinggal di `apps/
 
 ## Catatan operasional
 
-- **Latensi**: satu analisis memanggil Yahoo Finance beberapa kali plus dua gelombang Gemini,
-  realistis belasan detik. Timeout per panggilan Gemini 30 detik.
+- **Latensi**: satu analisis memanggil Yahoo Finance beberapa kali plus dua gelombang Gemini.
+  Terukur di pemakaian nyata sekitar 10 sampai 22 detik, tergantung ticker. Timeout per panggilan
+  Gemini 30 detik.
+- **Thinking budget**: Fundamental Agent dan Market Intelligence Agent berjalan dengan
+  `thinkingBudget: 0` karena keduanya hanya menafsirkan angka yang sudah dihitung. Decision Agent
+  dibiarkan memakai thinking dinamis bawaan model karena dia yang benar benar menimbang. Setelan
+  ini memangkas latensi dari sekitar 28 detik menjadi sekitar 12 detik tanpa menurunkan kualitas
+  keluaran.
 - **Cache**: hasil disimpan di memori per kombinasi ticker, profil risiko, horizon, dan bahasa.
   Cukup untuk satu proses. Kalau nanti di-deploy multi instance dan cache perlu dibagi, itu
   pekerjaan lanjutan (Redis dan sejenisnya).

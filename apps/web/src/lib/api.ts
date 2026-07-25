@@ -4,16 +4,23 @@ import { mockApiFetch } from "@/lib/mock-api";
 export class ApiError extends Error {
   readonly status: number;
   readonly fieldErrors: Record<string, string[]>;
+  /**
+   * Kode stabil dari backend AI Analysis, dipakai UI untuk memilih pesan yang
+   * sudah diterjemahkan. Backend Laravel tidak mengirim ini, jadi bisa kosong.
+   */
+  readonly code?: string;
 
   constructor(
     message: string,
     status: number,
     fieldErrors: Record<string, string[]> = {},
+    code?: string,
   ) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.fieldErrors = fieldErrors;
+    this.code = code;
   }
 }
 
@@ -71,11 +78,16 @@ async function plainFetch<T>(url: string, method: string, body: unknown): Promis
     headers["Content-Type"] = "application/json";
   }
 
-  const response = await fetch(url, {
-    method,
-    headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+  } catch {
+    throw new ApiError("Tidak bisa terhubung ke server", 0, {}, "network_error");
+  }
 
   if (response.status === 204) {
     return undefined as T;
@@ -92,7 +104,11 @@ async function plainFetch<T>(url: string, method: string, body: unknown): Promis
       payload && typeof payload === "object" && "errors" in payload
         ? (payload.errors as Record<string, string[]>)
         : {};
-    throw new ApiError(message, response.status, fieldErrors);
+    const code =
+      payload && typeof payload === "object" && "code" in payload
+        ? String(payload.code)
+        : undefined;
+    throw new ApiError(message, response.status, fieldErrors, code);
   }
 
   return payload as T;

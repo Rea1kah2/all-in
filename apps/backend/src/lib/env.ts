@@ -7,7 +7,7 @@ const envSchema = z.object({
   GEMINI_MODEL: z.string().min(1).default("gemini-2.5-flash"),
   ALLOWED_ORIGIN: z.string().min(1).default("http://localhost:3000"),
   ANALYSIS_CACHE_TTL_MS: z.coerce.number().int().nonnegative().default(600_000),
-  RATE_LIMIT_PER_MINUTE: z.coerce.number().int().positive().default(20),
+  RATE_LIMIT_PER_MINUTE: z.coerce.number().int().positive().default(5),
 });
 
 const parsed = envSchema.safeParse(process.env);

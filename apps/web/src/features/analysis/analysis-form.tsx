@@ -36,6 +36,7 @@ export function AnalysisForm({ defaultTicker, isPending, onSubmit }: Props) {
     defaultValues: {
       ticker: defaultTicker ?? "",
       market: "US",
+
       risk_profile: "Moderate",
       investment_goal: "Long Term",
     },

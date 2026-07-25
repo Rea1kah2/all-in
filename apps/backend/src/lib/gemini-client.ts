@@ -28,10 +28,20 @@ function extractJson(text: string): unknown {
   }
 }
 
+type AskOptions = {
+  /**
+   * Anggaran token thinking. `0` mematikan thinking, cocok untuk agent yang hanya
+   * menafsirkan angka yang sudah dihitung. Dikosongkan berarti mengikuti perilaku
+   * dinamis bawaan model, dipakai untuk agent yang benar benar perlu menimbang.
+   */
+  thinkingBudget?: number;
+};
+
 export async function askGeminiJson<T>(
   schema: z.ZodType<T>,
   systemPrompt: string,
   userPrompt: string,
+  options: AskOptions = {},
 ): Promise<T> {
   let text: string | undefined;
 
@@ -45,6 +55,9 @@ export async function askGeminiJson<T>(
         responseJsonSchema: toGeminiSchema(schema),
         temperature: 0.4,
         httpOptions: { timeout: REQUEST_TIMEOUT_MS },
+        ...(options.thinkingBudget === undefined
+          ? {}
+          : { thinkingConfig: { thinkingBudget: options.thinkingBudget } }),
       },
     });
     text = response.text;

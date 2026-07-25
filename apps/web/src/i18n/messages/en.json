@@ -129,6 +129,15 @@
     "failed": "Analysis failed, try again",
     "loadingTitle": "Analyzing {ticker}",
     "loadingBody": "The Data Collector is gathering data, three AI Agents will assess and conclude",
+    "loadingElapsed": "{seconds}s",
+    "loadingStageActive": "In progress",
+    "errors": {
+      "ticker_not_found": "Ticker not found. Check the spelling and try again.",
+      "market_data_unavailable": "Market data is unavailable right now. Try again shortly.",
+      "ai_unavailable": "The AI analysis service is unavailable right now. Try again shortly.",
+      "rate_limited": "Too many requests. Wait a moment before analyzing again.",
+      "network_error": "Cannot reach the analysis service. Check your connection."
+    },
     "confidence": "Confidence",
     "simulatedBadge": "Simulated data, not from a real AI backend yet",
     "sector": "Sector",
@@ -142,7 +151,7 @@
     "trail": {
       "collectorTitle": "Data Collector",
       "collectorRole": "Not AI, gathers market data and news",
-      "collectorOutput": "Data gathered from Yahoo Finance and Google News",
+      "collectorOutput": "Price, fundamental, and news data gathered from Yahoo Finance",
       "agent1Title": "AI Agent 1, Fundamental and Technical",
       "agent1Role": "Assesses business health and price structure",
       "agent1Output": "Fundamental {fundamental}, Technical {technical}",
