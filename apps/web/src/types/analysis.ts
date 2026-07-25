@@ -13,6 +13,7 @@ export const wireRequestSchema = z.object({
   ticker: z.string().min(1),
   risk_profile: z.enum(["conservative", "moderate", "aggressive"]),
   investment_goal: z.enum(["short_term", "medium_term", "long_term"]),
+  locale: z.enum(["id", "en"]).optional(),
 });
 
 export type WireRequest = z.infer<typeof wireRequestSchema>;
@@ -28,11 +29,12 @@ const investmentGoalWire = {
   "Long Term": "long_term",
 } as const;
 
-export function toWireRequest(input: AnalyzeRequest): WireRequest {
+export function toWireRequest(input: AnalyzeRequest, locale?: "id" | "en"): WireRequest {
   return {
     ticker: input.ticker.toUpperCase().trim(),
     risk_profile: riskProfileWire[input.risk_profile],
     investment_goal: investmentGoalWire[input.investment_goal],
+    ...(locale ? { locale } : {}),
   };
 }
 

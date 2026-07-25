@@ -30,6 +30,16 @@ export const env = createEnv({
           .map((path) => path.trim())
           .filter(Boolean),
       ),
+    NEXT_PUBLIC_ANALYSIS_API_URL: z.string().default(""),
+    NEXT_PUBLIC_DIRECT_LIVE_PATHS: z
+      .string()
+      .default("/api/analyze")
+      .transform((value) =>
+        value
+          .split(",")
+          .map((path) => path.trim())
+          .filter(Boolean),
+      ),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -38,6 +48,8 @@ export const env = createEnv({
     NEXT_PUBLIC_ENABLE_MOCK_API: process.env.NEXT_PUBLIC_ENABLE_MOCK_API,
     NEXT_PUBLIC_LIVE_API_PATHS: process.env.NEXT_PUBLIC_LIVE_API_PATHS,
     NEXT_PUBLIC_LOCAL_LIVE_PATHS: process.env.NEXT_PUBLIC_LOCAL_LIVE_PATHS,
+    NEXT_PUBLIC_ANALYSIS_API_URL: process.env.NEXT_PUBLIC_ANALYSIS_API_URL,
+    NEXT_PUBLIC_DIRECT_LIVE_PATHS: process.env.NEXT_PUBLIC_DIRECT_LIVE_PATHS,
   },
   emptyStringAsUndefined: true,
 });

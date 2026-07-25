@@ -48,8 +48,15 @@ function isLocalLivePath(path: string): boolean {
   return env.NEXT_PUBLIC_LOCAL_LIVE_PATHS.some((prefix) => path.startsWith(prefix));
 }
 
+function isDirectPath(path: string): boolean {
+  if (!env.NEXT_PUBLIC_ANALYSIS_API_URL) {
+    return false;
+  }
+  return env.NEXT_PUBLIC_DIRECT_LIVE_PATHS.some((prefix) => path.startsWith(prefix));
+}
+
 export function isMockPath(path: string): boolean {
-  if (isLocalLivePath(path)) {
+  if (isDirectPath(path) || isLocalLivePath(path)) {
     return false;
   }
   if (!env.NEXT_PUBLIC_ENABLE_MOCK_API) {
@@ -58,27 +65,55 @@ export function isMockPath(path: string): boolean {
   return !env.NEXT_PUBLIC_LIVE_API_PATHS.some((prefix) => path.startsWith(prefix));
 }
 
+async function plainFetch<T>(url: string, method: string, body: unknown): Promise<T> {
+  const headers: Record<string, string> = { Accept: "application/json" };
+  if (body !== undefined) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  const response = await fetch(url, {
+    method,
+    headers,
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  const payload = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const message =
+      payload && typeof payload === "object" && "message" in payload
+        ? String(payload.message)
+        : "Terjadi kesalahan pada server";
+    const fieldErrors =
+      payload && typeof payload === "object" && "errors" in payload
+        ? (payload.errors as Record<string, string[]>)
+        : {};
+    throw new ApiError(message, response.status, fieldErrors);
+  }
+
+  return payload as T;
+}
+
 export async function apiFetch<T>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
   const method = options.method ?? "GET";
 
-  if (isLocalLivePath(path)) {
-    const response = await fetch(path, {
+  if (isDirectPath(path)) {
+    return plainFetch<T>(
+      `${env.NEXT_PUBLIC_ANALYSIS_API_URL}${path}`,
       method,
-      headers: { Accept: "application/json" },
-      body: options.body === undefined ? undefined : JSON.stringify(options.body),
-    });
-    const payload = await response.json().catch(() => null);
-    if (!response.ok) {
-      const message =
-        payload && typeof payload === "object" && "message" in payload
-          ? String(payload.message)
-          : "Terjadi kesalahan pada server";
-      throw new ApiError(message, response.status);
-    }
-    return payload as T;
+      options.body,
+    );
+  }
+
+  if (isLocalLivePath(path)) {
+    return plainFetch<T>(path, method, options.body);
   }
 
   if (isMockPath(path)) {
