@@ -18,6 +18,9 @@
     "node": ">=24.0.0"
   },
   "pnpm": {
-    "ignoredBuiltDependencies": ["@parcel/watcher", "@swc/core"]
+    "ignoredBuiltDependencies": [
+      "@parcel/watcher",
+      "@swc/core"
+    ]
   }
 }

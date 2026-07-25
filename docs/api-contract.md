@@ -4,6 +4,12 @@ Dokumen ini adalah sumber kebenaran tunggal untuk integrasi antara frontend Next
 (`apps/web`) dan backend partner (InvestIQ AI: Laravel 11 + FastAPI + LangGraph + Gemini).
 Tujuannya agar kedua sisi bisa bekerja paralel tanpa saling menebak bentuk data.
 
+> **Update**: `/api/analyze` sekarang juga punya jalur mandiri yang sudah jalan, tidak
+> menunggu backend partner. Lihat `apps/backend/README.md` untuk layanan AI Analysis milik
+> sendiri (Node/TypeScript, satu monorepo dengan frontend, kontrak dibagi lewat
+> `packages/contracts`). Dokumen di bawah ini tetap berlaku sebagai kontrak untuk jalur
+> Laravel/FastAPI partner, kalau/ketika itu siap dipakai berdampingan.
+
 ## Arsitektur dan port
 
 ```

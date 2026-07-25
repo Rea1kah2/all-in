@@ -6,3 +6,6 @@ allowBuilds:
   '@swc/core': true
   sharp: true
   unrs-resolver: true
+  '@google/genai': false
+  esbuild: false
+  protobufjs: false
