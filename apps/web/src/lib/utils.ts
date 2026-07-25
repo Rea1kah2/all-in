@@ -5,11 +5,18 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Mata uang yang lazim ditulis tanpa desimal, menulis Rp 6.275,00 terasa keliru. */
+const zeroDecimalCurrencies = new Set(["IDR", "JPY", "KRW", "VND"]);
+
 export function formatPrice(value: number, currency: string) {
-  return new Intl.NumberFormat("en-US", {
+  const code = currency.toUpperCase();
+  const fractionDigits = zeroDecimalCurrencies.has(code) ? 0 : 2;
+
+  return new Intl.NumberFormat(code === "IDR" ? "id-ID" : "en-US", {
     style: "currency",
-    currency,
-    minimumFractionDigits: 2,
+    currency: code,
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
   }).format(value);
 }
 

@@ -218,7 +218,10 @@ export function computeTechnicalScore(closes: number[]): TechnicalReading {
     score -= 10;
     reasons.push(`RSI ${rsi} masuk area overbought, rawan koreksi jangka pendek`);
   } else if (rsi <= 30) {
-    score -= 5;
+    // Oversold dihukum lebih berat daripada sekadar melemah. Hukumannya dulu
+    // justru lebih ringan, sehingga saham yang jatuh dalam menerima skor lebih
+    // baik daripada yang cuma kehilangan momentum.
+    score -= 8;
     reasons.push(`RSI ${rsi} masuk area oversold, tekanan jual masih dominan`);
   } else if (rsi >= 55) {
     score += 8;

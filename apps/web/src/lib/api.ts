@@ -55,15 +55,8 @@ function isLocalLivePath(path: string): boolean {
   return env.NEXT_PUBLIC_LOCAL_LIVE_PATHS.some((prefix) => path.startsWith(prefix));
 }
 
-function isDirectPath(path: string): boolean {
-  if (!env.NEXT_PUBLIC_ANALYSIS_API_URL) {
-    return false;
-  }
-  return env.NEXT_PUBLIC_DIRECT_LIVE_PATHS.some((prefix) => path.startsWith(prefix));
-}
-
 export function isMockPath(path: string): boolean {
-  if (isDirectPath(path) || isLocalLivePath(path)) {
+  if (isLocalLivePath(path)) {
     return false;
   }
   if (!env.NEXT_PUBLIC_ENABLE_MOCK_API) {
@@ -119,14 +112,6 @@ export async function apiFetch<T>(
   options: RequestOptions = {},
 ): Promise<T> {
   const method = options.method ?? "GET";
-
-  if (isDirectPath(path)) {
-    return plainFetch<T>(
-      `${env.NEXT_PUBLIC_ANALYSIS_API_URL}${path}`,
-      method,
-      options.body,
-    );
-  }
 
   if (isLocalLivePath(path)) {
     return plainFetch<T>(path, method, options.body);

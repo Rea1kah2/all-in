@@ -179,6 +179,8 @@
       "rsi": "RSI",
       "trend": "Trend",
       "change1y": "1Y change",
+      "pe": "PE ratio",
+      "roe": "ROE",
       "news": "Related news"
     },
     "reasons": "Key reasons",

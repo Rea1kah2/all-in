@@ -17,6 +17,23 @@ app.use(
   }),
 );
 
+// Tiap panggilan ke bawah sini berbiaya, jadi hanya Route Handler Next.js yang
+// memegang secret ini boleh masuk. CORS tidak menolong di sini, CORS hanya
+// mengatur browser dan tidak menghalangi curl.
+if (env.BACKEND_SHARED_SECRET) {
+  app.use("/api", (request, response, next) => {
+    if (request.get("x-backend-secret") === env.BACKEND_SHARED_SECRET) {
+      next();
+      return;
+    }
+    response.status(401).json({ message: "Tidak diizinkan", code: "unauthorized" });
+  });
+} else {
+  console.warn(
+    "BACKEND_SHARED_SECRET kosong, /api terbuka untuk siapa pun. Isi sebelum deploy.",
+  );
+}
+
 app.use(
   "/api",
   rateLimit({

@@ -179,6 +179,8 @@
       "rsi": "RSI",
       "trend": "Tren",
       "change1y": "Perubahan 1 tahun",
+      "pe": "PE ratio",
+      "roe": "ROE",
       "news": "Berita terkait"
     },
     "reasons": "Alasan utama",

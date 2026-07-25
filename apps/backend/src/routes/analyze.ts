@@ -38,7 +38,16 @@ analyzeRouter.post("/api/analyze", async (request, response) => {
   const input = parsed.data;
   const locale = input.locale ?? "id";
   const ticker = input.ticker.trim().toUpperCase();
-  const cacheKey = [ticker, input.risk_profile, input.investment_goal, locale].join(":");
+  // Nama model ikut jadi kunci, kalau tidak hasil dari model lama akan tetap
+  // disajikan setelah model diganti lewat env.
+  const cacheKey = [
+    ticker,
+    input.risk_profile,
+    input.investment_goal,
+    locale,
+    env.GEMINI_MODEL,
+    env.GEMINI_LIGHT_MODEL,
+  ].join(":");
 
   const cached = cache.get(cacheKey);
   if (cached) {
@@ -81,6 +90,7 @@ analyzeRouter.post("/api/analyze", async (request, response) => {
       technical_analysis: technical.reasons.join(". "),
       market_data: {
         price: data.price,
+        currency: data.currency,
         changePercent1y: technical.changePercent1y,
         pe: data.peRatio ?? undefined,
         roe: data.roe ?? undefined,

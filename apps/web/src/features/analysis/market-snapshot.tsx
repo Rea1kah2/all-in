@@ -11,13 +11,10 @@ export function MarketSnapshot({ data }: { data: MarketData }) {
 
   const stats: Stat[] = [];
   if (data.price !== undefined) {
-    stats.push({ label: t("price"), value: formatPrice(data.price, "USD") });
-  }
-  if (data.rsi !== undefined) {
-    stats.push({ label: t("rsi"), value: String(data.rsi) });
-  }
-  if (data.trend) {
-    stats.push({ label: t("trend"), value: data.trend });
+    stats.push({
+      label: t("price"),
+      value: formatPrice(data.price, data.currency ?? "USD"),
+    });
   }
   if (data.changePercent1y !== undefined) {
     stats.push({
@@ -25,6 +22,19 @@ export function MarketSnapshot({ data }: { data: MarketData }) {
       value: formatPercent(data.changePercent1y),
       tone: data.changePercent1y >= 0 ? "text-bull" : "text-bear",
     });
+  }
+  if (data.pe !== undefined) {
+    stats.push({ label: t("pe"), value: data.pe.toFixed(2) });
+  }
+  if (data.roe !== undefined) {
+    // Dikirim sebagai pecahan, jadi 1.41 berarti 141%.
+    stats.push({ label: t("roe"), value: formatPercent(data.roe * 100) });
+  }
+  if (data.rsi !== undefined) {
+    stats.push({ label: t("rsi"), value: String(data.rsi) });
+  }
+  if (data.trend) {
+    stats.push({ label: t("trend"), value: data.trend });
   }
 
   if (stats.length === 0 && (!data.news || data.news.length === 0)) {
@@ -36,7 +46,7 @@ export function MarketSnapshot({ data }: { data: MarketData }) {
       <h2 className="text-sm text-ink">{t("title")}</h2>
 
       {stats.length > 0 ? (
-        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
           {stats.map((stat) => (
             <div key={stat.label}>
               <p className="text-xs text-ink-muted">{stat.label}</p>

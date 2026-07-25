@@ -8,6 +8,12 @@ const envSchema = z.object({
   GEMINI_LIGHT_MODEL: z.string().min(1).default("gemini-3.5-flash-lite"),
   GEMINI_DAILY_CALL_LIMIT: z.coerce.number().int().positive().default(18),
   ALLOWED_ORIGIN: z.string().min(1).default("http://localhost:3000"),
+  /**
+   * Secret bersama dengan Route Handler Next.js. Kalau diisi, `/api` menolak
+   * permintaan yang tidak membawanya. Dikosongkan berarti endpoint terbuka, dan
+   * itu hanya boleh untuk pengembangan lokal.
+   */
+  BACKEND_SHARED_SECRET: z.string().default(""),
   ANALYSIS_CACHE_TTL_MS: z.coerce.number().int().nonnegative().default(600_000),
   RATE_LIMIT_PER_MINUTE: z.coerce.number().int().positive().default(5),
 });

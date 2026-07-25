@@ -6,7 +6,12 @@ const yahooFinance = new YahooFinance({
   validation: { logErrors: false },
 });
 
-const HISTORY_DAYS = 260;
+/**
+ * Hari kalender, bukan hari bursa. Harus benar benar satu tahun karena
+ * `changePercent1y` diturunkan dari deret ini dan UI melabelinya perubahan satu
+ * tahun.
+ */
+const HISTORY_DAYS = 365;
 const MAX_HEADLINES = 5;
 
 const SUMMARY_MODULES = [
@@ -71,8 +76,25 @@ export type CollectedData = {
   headlines: string[];
 };
 
+/**
+ * Titik pada simbol Yahoo punya dua arti yang berbeda.
+ *
+ * Kelas saham Amerika memakai strip, `BRK.B` menjadi `BRK-B`. Akhiran bursa tetap
+ * memakai titik, `BBCA.JK` harus dibiarkan apa adanya, dan mengubahnya menjadi
+ * `BBCA-JK` membuat Yahoo mengembalikan 404.
+ *
+ * Pembedanya panjang bagian setelah titik terakhir: satu huruf berarti kelas
+ * saham, dua huruf atau lebih berarti kode bursa.
+ */
 export function toYahooSymbol(ticker: string): string {
-  return ticker.trim().toUpperCase().replaceAll(".", "-");
+  const symbol = ticker.trim().toUpperCase();
+  const lastDot = symbol.lastIndexOf(".");
+  if (lastDot === -1) return symbol;
+
+  const suffix = symbol.slice(lastDot + 1);
+  if (suffix.length !== 1) return symbol;
+
+  return `${symbol.slice(0, lastDot)}-${suffix}`;
 }
 
 function toNumber(value: unknown): number | null {
@@ -140,13 +162,38 @@ async function fetchCloses(symbol: string): Promise<number[]> {
   }
 }
 
+/**
+ * Yahoo tetap mengembalikan berita meski tidak punya apa apa tentang tickernya,
+ * dan isinya umpan generik yang sama untuk ticker apa pun. Sudah terlihat pada
+ * BBCA.JK dan BBRI.JK yang keduanya menerima berita basket SMA yang identik.
+ *
+ * Pembedanya, berita yang benar benar terkait membawa `relatedTickers` yang
+ * memuat simbolnya, sedangkan umpan generik tidak punya field itu sama sekali.
+ * Lebih baik mengirim nol berita ke Market Intelligence Agent daripada berita
+ * yang salah, karena agent itu akan menalar di atas apa pun yang diberikan.
+ */
+function isRelated(relatedTickers: unknown, symbol: string): boolean {
+  if (!Array.isArray(relatedTickers)) return false;
+
+  const base = symbol.split(".")[0]?.toUpperCase() ?? symbol.toUpperCase();
+  return relatedTickers.some((entry) => {
+    if (typeof entry !== "string") return false;
+    const candidate = entry.toUpperCase();
+    return candidate === symbol.toUpperCase() || candidate === base;
+  });
+}
+
 async function fetchHeadlines(symbol: string): Promise<string[]> {
   try {
     const result = await yahooFinance.search(symbol, {
-      newsCount: MAX_HEADLINES,
+      newsCount: MAX_HEADLINES * 2,
       quotesCount: 0,
     });
+
     return (result.news ?? [])
+      .filter((item) =>
+        isRelated((item as { relatedTickers?: unknown }).relatedTickers, symbol),
+      )
       .map((item) => item.title)
       .filter((title): title is string => typeof title === "string" && title.length > 0)
       .slice(0, MAX_HEADLINES);

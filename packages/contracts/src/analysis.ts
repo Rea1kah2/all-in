@@ -15,8 +15,11 @@ export type WireRequest = z.infer<typeof wireRequestSchema>;
 
 export const marketDataSchema = z.object({
   price: z.number().optional(),
+  /** Kode ISO seperti USD atau IDR. Tanpa ini harga saham non Amerika salah label. */
+  currency: z.string().optional(),
   changePercent1y: z.number().optional(),
   pe: z.number().optional(),
+  /** Pecahan, bukan persen. Apple bernilai 1.41 yang berarti 141%. */
   roe: z.number().optional(),
   rsi: z.number().optional(),
   trend: z.string().optional(),
