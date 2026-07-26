@@ -12,6 +12,15 @@ export const env = createEnv({
     ANALYSIS_API_URL: z.string().url().optional(),
     /** Secret bersama antara Route Handler dan backend. Backend menolak tanpa ini. */
     BACKEND_SHARED_SECRET: z.string().optional(),
+    /**
+     * Koneksi Postgres untuk data pengguna (auth, watchlist, alert, riwayat
+     * analisis, notifikasi). Opsional di level skema supaya `pnpm dev` tetap
+     * bisa jalan sebelum database disiapkan, fitur yang membutuhkannya gagal
+     * dengan pesan jelas, bukan membuat seluruh aplikasi tidak bisa start.
+     */
+    DATABASE_URL: z.string().optional(),
+    /** Secret penandatanganan sesi better-auth. Wajib diisi sebelum deploy. */
+    BETTER_AUTH_SECRET: z.string().optional(),
   },
   client: {
     NEXT_PUBLIC_API_URL: z.string().url(),
@@ -43,6 +52,8 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     ANALYSIS_API_URL: process.env.ANALYSIS_API_URL,
     BACKEND_SHARED_SECRET: process.env.BACKEND_SHARED_SECRET,
+    DATABASE_URL: process.env.DATABASE_URL,
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_ENABLE_MOCK_API: process.env.NEXT_PUBLIC_ENABLE_MOCK_API,

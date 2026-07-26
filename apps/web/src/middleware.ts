@@ -1,6 +1,9 @@
+import { getSessionCookie } from "better-auth/cookies";
 import { type NextRequest, NextResponse } from "next/server";
 
-const SESSION_COOKIES = ["laravel_session", "mock_session"];
+// Fallback dari era mock/Laravel, dijaga selama keduanya masih bisa dipakai
+// lewat NEXT_PUBLIC_ENABLE_MOCK_API atau backend Laravel partner.
+const LEGACY_SESSION_COOKIES = ["laravel_session", "mock_session"];
 
 const protectedPrefixes = [
   "/home",
@@ -13,8 +16,15 @@ const protectedPrefixes = [
 
 const guestOnlyPaths = ["/login", "/register"];
 
+/**
+ * `getSessionCookie` hanya membaca keberadaan cookie, tidak memvalidasinya ke
+ * database. Cukup untuk gerbang di middleware (edge, tidak boleh menyentuh
+ * Postgres), validasi sungguhan tetap terjadi di tiap Route Handler lewat
+ * `getAuth().api.getSession()`.
+ */
 function hasSession(request: NextRequest) {
-  return SESSION_COOKIES.some((name) => request.cookies.has(name));
+  if (getSessionCookie(request)) return true;
+  return LEGACY_SESSION_COOKIES.some((name) => request.cookies.has(name));
 }
 
 export function middleware(request: NextRequest) {

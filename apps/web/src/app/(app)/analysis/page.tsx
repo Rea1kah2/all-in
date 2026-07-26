@@ -2,10 +2,11 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnalysisForm } from "@/features/analysis/analysis-form";
 import { AnalysisLoading } from "@/features/analysis/analysis-loading";
 import { AnalysisResult } from "@/features/analysis/analysis-result";
+import { useAnalysisHistory } from "@/features/analysis/use-analysis-history";
 import { useAnalyze } from "@/features/analysis/use-analyze";
 import { useCompany } from "@/features/companies/use-company";
 import { ApiError } from "@/lib/api";
@@ -43,6 +44,20 @@ export default function AnalysisPage() {
   const [result, setResult] = useState<ResultState | null>(null);
   const analyze = useAnalyze();
   const company = useCompany(result?.ticker ?? "");
+
+  // Hasil terakhir dikembalikan dari riwayat, bukan hilang begitu halaman
+  // di-refresh. Hanya terjadi sekali di awal (ref, bukan bergantung ke
+  // `result`), supaya menekan "Analisis baru" tidak langsung memuat ulang
+  // hasil lama yang sama, dan link "Analyze" dari watchlist tetap membuka
+  // form kosong.
+  const history = useAnalysisHistory();
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (hydratedRef.current || defaultTicker || !history.data) return;
+    hydratedRef.current = true;
+    const latest = history.data[0];
+    if (latest) setResult({ data: latest.result, ticker: latest.ticker });
+  }, [defaultTicker, history.data]);
 
   const errorKey = errorMessageKey(analyze.error);
   const errorMessage = errorKey ? t(errorKey) : t("failed");

@@ -1069,7 +1069,7 @@ export async function mockApiFetch<T>(
       });
     }
     const user: User = {
-      id: 1,
+      id: "mock-1",
       name: "Clay",
       email: input.email ?? "clay@example.com",
       notifyPriceAlert: true,
@@ -1086,7 +1086,7 @@ export async function mockApiFetch<T>(
       });
     }
     const user: User = {
-      id: 1,
+      id: "mock-1",
       name: input.name ?? "Pengguna baru",
       email: input.email ?? "baru@example.com",
       notifyPriceAlert: true,

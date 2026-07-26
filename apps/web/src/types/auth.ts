@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 export const userSchema = z.object({
-  id: z.number(),
+  // better-auth memakai id string (nanoid), bukan angka bersambung.
+  id: z.string(),
   name: z.string(),
   email: z.string().email(),
   notifyPriceAlert: z.boolean(),

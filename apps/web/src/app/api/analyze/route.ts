@@ -1,6 +1,8 @@
-import { wireRequestSchema } from "@all-in/contracts";
+import { analyzeResponseSchema, wireRequestSchema } from "@all-in/contracts";
+import { getDb, schema } from "@all-in/db";
 import { NextResponse } from "next/server";
 import { env } from "@/config/env";
+import { requireUser } from "@/lib/require-user";
 
 /**
  * Proxy sisi server untuk backend AI Analysis.
@@ -8,9 +10,17 @@ import { env } from "@/config/env";
  * Browser tidak pernah lagi memanggil backend langsung, sehingga alamat backend
  * tidak ikut ke bundel klien dan secret bersama tetap tinggal di server. Tiap
  * panggilan ke backend berbiaya, jadi endpoint itu tidak boleh terbuka bagi siapa
- * pun yang menebak URL-nya.
+ * pun yang menebak URL-nya, dan sekarang mewajibkan sesi login supaya jelas
+ * siapa yang memakai jatah kuota harian.
+ *
+ * Hasil yang berhasil disimpan ke tabel `analysis`. Satu baris di sana mewakili
+ * tiga panggilan Gemini yang sudah dibayar, jadi refresh halaman tidak lagi
+ * membuang hasil yang sudah didapat.
  */
 export async function POST(request: Request) {
+  const { user, response } = await requireUser();
+  if (!user) return response;
+
   if (!env.ANALYSIS_API_URL) {
     return NextResponse.json(
       { message: "Layanan analisis belum dikonfigurasi", code: "ai_unavailable" },
@@ -74,6 +84,29 @@ export async function POST(request: Request) {
       { message: "Balasan layanan analisis tidak terbaca", code: "ai_unavailable" },
       { status: 502 },
     );
+  }
+
+  if (upstream.ok) {
+    const validated = analyzeResponseSchema.safeParse(payload);
+    if (validated.success && env.DATABASE_URL) {
+      try {
+        await getDb(env.DATABASE_URL)
+          .insert(schema.analysis)
+          .values({
+            userId: user.id,
+            ticker: parsed.data.ticker,
+            riskProfile: parsed.data.risk_profile,
+            investmentGoal: parsed.data.investment_goal,
+            locale: parsed.data.locale ?? "id",
+            payload: validated.data,
+          });
+      } catch (error) {
+        // Kegagalan simpan tidak boleh membuang hasil yang sudah dibayar
+        // dengan kuota Gemini. Pengguna tetap menerimanya, hanya saja tidak
+        // akan muncul lagi di riwayat.
+        console.error("Gagal menyimpan riwayat analisis", error);
+      }
+    }
   }
 
   // Status dan kode error backend diteruskan apa adanya, karena UI memetakan
