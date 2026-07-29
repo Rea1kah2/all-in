@@ -74,6 +74,12 @@ export default function AnalysisPage() {
     router.replace("/analysis");
   };
 
+  // Hasil analisis membawa nama resmi dari Yahoo, dan itu yang paling sahih.
+  // Tanpa ini, ticker di luar daftar mock (BBCA.JK dan seluruh bursa Indonesia)
+  // tampil sebagai kode, bukan nama perusahaan.
+  const companyName =
+    result?.data.company_name ?? company.data?.name ?? result?.ticker ?? "";
+
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <div>
@@ -85,7 +91,7 @@ export default function AnalysisPage() {
         <AnalysisResult
           result={result.data}
           ticker={result.ticker}
-          companyName={company.data?.name ?? result.ticker}
+          companyName={companyName}
           onReset={handleReset}
         />
       ) : analyze.isPending ? (

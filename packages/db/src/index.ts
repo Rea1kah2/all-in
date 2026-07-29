@@ -13,6 +13,13 @@ export { schema };
 let client: ReturnType<typeof postgres> | null = null;
 let database: ReturnType<typeof drizzle<typeof schema>> | null = null;
 
+/**
+ * Instance dibuat sekali lalu dipakai ulang, jadi `connectionString` hanya
+ * berpengaruh pada pemanggilan pertama. Ini disengaja karena aplikasi hanya
+ * bicara ke satu database, dan membuat pool baru per permintaan akan menghabiskan
+ * koneksi. Kalau nanti benar benar perlu lebih dari satu database, ganti dengan
+ * cache berkunci URL, jangan diam diam mengandalkan perilaku sekarang.
+ */
 export function getDb(connectionString?: string) {
   if (database) return database;
 

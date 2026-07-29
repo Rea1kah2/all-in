@@ -2,7 +2,7 @@ import { join } from "node:path";
 import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { z } from "zod";
 import { env, geminiModelChain } from "./env.ts";
-import { aiQuotaExceeded, aiUnavailable } from "./errors.ts";
+import { aiQuotaExceeded, aiUnavailable, modelOverloaded } from "./errors.ts";
 import { GeminiBudget } from "./gemini-budget.ts";
 import { cacheDir } from "./paths.ts";
 
@@ -41,13 +41,25 @@ function extractJson(text: string): unknown {
  * lain karena tindakan penggunanya berbeda: menunggu reset harian, bukan mencoba
  * lagi sebentar lagi.
  */
+function statusOf(error: unknown): number | null {
+  if (typeof error !== "object" || error === null || !("status" in error)) return null;
+  const status = (error as { status?: unknown }).status;
+  return typeof status === "number" ? status : null;
+}
+
 function isQuotaError(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "status" in error &&
-    (error as { status?: unknown }).status === 429
-  );
+  return statusOf(error) === 429;
+}
+
+/**
+ * `503 UNAVAILABLE` berarti model itu sedang kelebihan beban di sisi Google dan
+ * `504 DEADLINE_EXCEEDED` berarti permintaannya kehabisan waktu di sana.
+ * Keduanya soal keadaan model itu, bukan soal permintaan kita, jadi layak
+ * dicoba ulang di tingkat model berikutnya, sama seperti kehabisan kuota.
+ */
+function isOverloadedError(error: unknown): boolean {
+  const status = statusOf(error);
+  return status === 503 || status === 504;
 }
 
 function logUsage(
@@ -92,6 +104,22 @@ type AskOptions = {
   label?: string;
 };
 
+/**
+ * Model yang menolak `thinkingConfig`. Keluarga 3.x memakai `thinkingLevel`,
+ * keluarga 2.x memakai `thinkingBudget` dan membalas 400 untuk `thinkingLevel`.
+ * Daripada memelihara daftar keluarga model yang akan basi, kita belajar dari
+ * penolakan pertama lalu berhenti mengirimkannya untuk model itu. Ini penting
+ * karena mengganti model lewat env adalah jalan keluar saat satu keluarga
+ * sedang bermasalah, dan jalan keluar itu tidak boleh ikut rusak.
+ */
+const thinkingUnsupported = new Set<string>();
+
+function isThinkingUnsupportedError(error: unknown): boolean {
+  if (statusOf(error) !== 400) return false;
+  const message = error instanceof Error ? error.message : String(error);
+  return message.toLowerCase().includes("thinking");
+}
+
 async function generateOnce<T>(
   model: string,
   schema: z.ZodType<T>,
@@ -109,8 +137,8 @@ async function generateOnce<T>(
   // Dicatat sebelum dikirim, karena percobaan yang gagal pun ikut dihitung Google.
   geminiBudget.record(model);
 
-  try {
-    const response = await client.models.generateContent({
+  const send = (withThinking: boolean) =>
+    client.models.generateContent({
       model,
       contents: userPrompt,
       config: {
@@ -119,15 +147,39 @@ async function generateOnce<T>(
         responseJsonSchema: toGeminiSchema(schema),
         temperature: 0.4,
         httpOptions: { timeout: REQUEST_TIMEOUT_MS },
-        thinkingConfig: { thinkingLevel: thinkingLevelByTier[options.tier ?? "heavy"] },
+        ...(withThinking
+          ? {
+              thinkingConfig: {
+                thinkingLevel: thinkingLevelByTier[options.tier ?? "heavy"],
+              },
+            }
+          : {}),
       },
     });
+
+  try {
+    let response: Awaited<ReturnType<typeof send>>;
+    try {
+      response = await send(!thinkingUnsupported.has(model));
+    } catch (error) {
+      if (!isThinkingUnsupportedError(error)) throw error;
+      console.warn(
+        `Model ${model} tidak menerima thinkingConfig, dikirim ulang tanpa itu`,
+      );
+      thinkingUnsupported.add(model);
+      geminiBudget.record(model);
+      response = await send(false);
+    }
     logUsage(model, options.label ?? "agent", response);
     text = response.text;
   } catch (error) {
     if (isQuotaError(error)) {
       console.error(`Kuota Gemini habis untuk ${model}`);
       throw aiQuotaExceeded();
+    }
+    if (isOverloadedError(error)) {
+      console.warn(`Model ${model} sedang kelebihan beban, mencoba model berikutnya`);
+      throw modelOverloaded();
     }
     console.error(`Gemini request failed pada ${model}`, error);
     throw aiUnavailable();
@@ -153,25 +205,37 @@ export async function askGeminiJson<T>(
   userPrompt: string,
   options: AskOptions = {},
 ): Promise<T> {
-  let quotaError: unknown = null;
+  let lastRetryable: unknown = null;
 
   for (const model of geminiModelChain[options.tier ?? "heavy"]) {
     try {
       return await generateOnce(model, schema, systemPrompt, userPrompt, options);
     } catch (error) {
-      // Hanya kehabisan kuota yang layak dicoba ulang di model lain. Kegagalan
-      // lain, termasuk keluaran yang tidak lolos skema, akan berulang sama saja
-      // dan hanya membakar jatah model berikutnya.
-      if (!(error instanceof Error) || !isQuotaServiceError(error)) {
+      // Hanya dua keadaan yang layak dicoba ulang di model lain: kuota habis,
+      // dan model sedang kelebihan beban di sisi Google. Keduanya soal model
+      // itu, bukan soal permintaan kita. Kegagalan lain, termasuk keluaran yang
+      // tidak lolos skema, akan berulang sama saja dan hanya membakar jatah
+      // model berikutnya.
+      if (!(error instanceof Error) || !isRetryableOnNextModel(error)) {
         throw error;
       }
-      quotaError = error;
+      lastRetryable = error;
     }
   }
 
-  throw quotaError ?? aiUnavailable();
+  // Kelebihan beban bersifat sementara, jadi dilaporkan sebagai gangguan biasa
+  // supaya pengguna diminta mencoba lagi, bukan diberi tahu jatah hariannya habis.
+  if (lastRetryable instanceof Error && codeOf(lastRetryable) === "model_overloaded") {
+    throw aiUnavailable();
+  }
+  throw lastRetryable ?? aiUnavailable();
 }
 
-function isQuotaServiceError(error: Error): boolean {
-  return "code" in error && (error as { code?: unknown }).code === "ai_quota_exceeded";
+function codeOf(error: Error): unknown {
+  return "code" in error ? (error as { code?: unknown }).code : undefined;
+}
+
+function isRetryableOnNextModel(error: Error): boolean {
+  const code = codeOf(error);
+  return code === "ai_quota_exceeded" || code === "model_overloaded";
 }

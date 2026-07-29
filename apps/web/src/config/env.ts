@@ -21,44 +21,24 @@ export const env = createEnv({
     DATABASE_URL: z.string().optional(),
     /** Secret penandatanganan sesi better-auth. Wajib diisi sebelum deploy. */
     BETTER_AUTH_SECRET: z.string().optional(),
+    /**
+     * Alamat publik aplikasi, misalnya https://all-in.vercel.app. Wajib di
+     * produksi: tanpa ini better-auth menurunkan origin dari request, dan di
+     * belakang proxy Vercel hasilnya bisa salah sehingga pemeriksaan origin
+     * menolak permintaan yang sah. Di lokal boleh kosong.
+     */
+    BETTER_AUTH_URL: z.string().url().optional(),
   },
-  client: {
-    NEXT_PUBLIC_API_URL: z.string().url(),
-    NEXT_PUBLIC_APP_URL: z.string().url(),
-    NEXT_PUBLIC_ENABLE_MOCK_API: z
-      .enum(["true", "false"])
-      .default("false")
-      .transform((value) => value === "true"),
-    NEXT_PUBLIC_LIVE_API_PATHS: z
-      .string()
-      .default("")
-      .transform((value) =>
-        value
-          .split(",")
-          .map((path) => path.trim())
-          .filter(Boolean),
-      ),
-    NEXT_PUBLIC_LOCAL_LIVE_PATHS: z
-      .string()
-      .default("/api/market")
-      .transform((value) =>
-        value
-          .split(",")
-          .map((path) => path.trim())
-          .filter(Boolean),
-      ),
-  },
+  // Tidak ada lagi variabel klien. Semua permintaan menuju Route Handler di
+  // origin yang sama, jadi browser tidak perlu tahu alamat apa pun.
+  client: {},
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     ANALYSIS_API_URL: process.env.ANALYSIS_API_URL,
     BACKEND_SHARED_SECRET: process.env.BACKEND_SHARED_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-    NEXT_PUBLIC_ENABLE_MOCK_API: process.env.NEXT_PUBLIC_ENABLE_MOCK_API,
-    NEXT_PUBLIC_LIVE_API_PATHS: process.env.NEXT_PUBLIC_LIVE_API_PATHS,
-    NEXT_PUBLIC_LOCAL_LIVE_PATHS: process.env.NEXT_PUBLIC_LOCAL_LIVE_PATHS,
+    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
   },
   emptyStringAsUndefined: true,
 });

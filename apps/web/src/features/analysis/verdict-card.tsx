@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 import { TrendingDownIcon, TrendingUpIcon } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
-import { isMockPath } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { AnalyzeResponse } from "@/types/analysis";
 
@@ -56,12 +55,6 @@ export function VerdictCard({
       )}
       style={{ animationDelay: "0ms" }}
     >
-      {isMockPath("/api/analyze") ? (
-        <Badge variant="neutral" className="mb-4">
-          {t("simulatedBadge")}
-        </Badge>
-      ) : null}
-
       <div className="flex flex-wrap items-start justify-between gap-6">
         <div className="space-y-2">
           <p className="font-mono text-xs text-ink-muted">

@@ -12,11 +12,26 @@
     "logout": "Log out"
   },
   "nav": {
-    "home": { "label": "Home", "short": "Home" },
-    "analysis": { "label": "AI Analysis", "short": "Analysis" },
-    "companies": { "label": "Company Explorer", "short": "Explore" },
-    "watchlist": { "label": "Watchlist", "short": "Watchlist" },
-    "learn": { "label": "Learn", "short": "Learn" }
+    "home": {
+      "label": "Home",
+      "short": "Home"
+    },
+    "analysis": {
+      "label": "AI Analysis",
+      "short": "Analysis"
+    },
+    "companies": {
+      "label": "Company Explorer",
+      "short": "Explore"
+    },
+    "watchlist": {
+      "label": "Watchlist",
+      "short": "Watchlist"
+    },
+    "learn": {
+      "label": "Learn",
+      "short": "Learn"
+    }
   },
   "app": {
     "sidebarNote": "AI analysis helps you think more clearly. The final decision is always yours.",
@@ -59,23 +74,6 @@
     "watchlistError": "Watchlist failed to load, try again",
     "watchlistEmpty": "No stocks tracked yet. Save one from a company page."
   },
-  "newsCategory": {
-    "tech": "Technology",
-    "chips": "Semiconductors",
-    "macro": "Macro",
-    "auto": "Automotive",
-    "retail": "Retail",
-    "crypto": "Crypto"
-  },
-  "newsDetail": {
-    "back": "Back",
-    "loadError": "News not found",
-    "loadErrorHint": "The article may have been removed or the link is invalid.",
-    "relatedCompany": "Related company",
-    "viewCompany": "View company",
-    "analyze": "Analyze with AI",
-    "placeholderNote": "This article content is still sample data for development, not real news."
-  },
   "companies": {
     "title": "Company Explorer",
     "subtitle": "Search companies by ticker or name. For example, type AAPL for Apple Inc.",
@@ -96,7 +94,7 @@
     "fundamentalNote": "Full metrics and year over year trends are coming in a later iteration.",
     "chartError": "The chart for {ticker} failed to load, try again",
     "newsEmpty": "No news yet",
-    "newsHint": "The news feed for {ticker} will arrive once the news endpoint is ready",
+    "newsHint": "Yahoo Finance has no news directly related to {ticker} yet.",
     "metrics": {
       "peLabel": "P/E Ratio",
       "peHint": "How many times annual earnings you pay for one share",
@@ -140,7 +138,6 @@
       "network_error": "Cannot reach the analysis service. Check your connection."
     },
     "confidence": "Confidence",
-    "simulatedBadge": "Simulated data, not from a real AI backend yet",
     "sector": "Sector",
     "riskLevelLabel": "Risk level",
     "riskLevel": {

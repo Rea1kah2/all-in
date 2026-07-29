@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { popularTickers } from "@/config/tickers";
-import { buildMovers, liveIndices } from "@/lib/mock-api";
 import { fetchYahooQuote } from "@/lib/yahoo";
 import type { MarketIndex, MarketSummary, Mover } from "@/types/market";
 
@@ -55,9 +54,15 @@ export async function GET() {
     ]);
     const summary: MarketSummary = { indices, gainers, losers };
     return NextResponse.json(summary);
-  } catch {
-    const { gainers, losers } = buildMovers();
-    const summary: MarketSummary = { indices: liveIndices(), gainers, losers };
-    return NextResponse.json(summary);
+  } catch (error) {
+    // Dulu di sini ada fallback ke angka mock. Untuk produk keuangan yang
+    // tayang ke pengguna nyata, menampilkan nilai indeks karangan yang tidak
+    // bisa dibedakan dari data asli jauh lebih buruk daripada mengaku gagal.
+    // Semua komponen yang memakai data ini sudah menangani state error.
+    console.error("Gagal mengambil data pasar dari Yahoo", error);
+    return NextResponse.json(
+      { message: "Data pasar sedang tidak tersedia" },
+      { status: 502 },
+    );
   }
 }

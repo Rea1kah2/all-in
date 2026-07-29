@@ -75,6 +75,13 @@ export const watchlist = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     ticker: text("ticker").notNull(),
+    /**
+     * Nama perusahaan disimpan saat ditambahkan, bukan diambil ulang tiap kali
+     * daftar dibaca. Nama itu metadata yang praktis tidak berubah, berbeda dari
+     * harga, dan mengambilnya per baris berarti satu panggilan Yahoo tambahan
+     * untuk setiap saham yang dipantau.
+     */
+    name: text("name"),
     /** Hasil analisis terakhir, ditampilkan sebagai badge di baris watchlist. */
     recommendation: text("recommendation"),
     confidence: integer("confidence"),

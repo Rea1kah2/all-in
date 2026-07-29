@@ -22,11 +22,3 @@ export function useNews(ticker?: string) {
     staleTime: 5 * 60_000,
   });
 }
-
-export function useNewsItem(id: string) {
-  return useQuery({
-    queryKey: ["news", "item", id],
-    queryFn: () => apiFetch<NewsItem>(`/api/news/${id}`),
-    staleTime: 5 * 60_000,
-  });
-}

@@ -231,9 +231,16 @@ yang murni khusus UI (label Title Case, `toWireRequest`) tetap tinggal di `apps/
 - **Model tidak selalu tersedia**: daftar dari `GET /v1beta/models` tidak menjamin model bisa
   dipakai. `gemini-2.5-flash-lite` tetap muncul di daftar tetapi menolak dengan `404, no longer
   available to new users`. Sebelum mengganti model di env, uji dulu dengan satu panggilan kecil.
-- **Perbedaan antar generasi model**: model 3.x memakai `thinkingLevel`, bukan `thinkingBudget`.
-  `gemini-3.5-flash-lite` menolak `thinkingBudget` dengan `400`. Kode ini memakai `thinkingLevel`
-  karena diterima kedua model, sehingga rantai fallback aman ke dua arah.
+- **Perbedaan antar generasi model**: keluarga 3.x memakai `thinkingLevel`, keluarga 2.x memakai
+  `thinkingBudget`. Masing masing menolak milik yang lain dengan `400`. Kode ini mengirim
+  `thinkingLevel` lebih dulu, dan kalau ditolak karena alasan thinking, model itu dicatat lalu
+  permintaannya dikirim ulang tanpa konfigurasi tersebut. Dengan begitu mengganti `GEMINI_MODEL`
+  ke keluarga mana pun tetap bekerja, dan itu penting karena mengganti model adalah jalan keluar
+  saat satu keluarga sedang bermasalah.
+- **Gangguan sementara**: `503 UNAVAILABLE` (model kelebihan beban) dan `504 DEADLINE_EXCEEDED`
+  membuat tingkat itu jatuh ke model satunya, bukan langsung menggagalkan analisis. Karena itu
+  sebaiknya `GEMINI_MODEL` dan `GEMINI_LIGHT_MODEL` tidak berasal dari keluarga yang sama, supaya
+  tidak mati bersamaan.
 - **Yahoo Finance tidak resmi**: skema respons bisa berubah sewaktu waktu. Data Collector sudah
   menormalkan simbol bertanda titik (`BRK.B` menjadi `BRK-B`) dan punya fallback per modul
   supaya satu modul bermasalah tidak mematikan seluruh analisis.

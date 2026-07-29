@@ -17,6 +17,8 @@ import { requireUser } from "@/lib/require-user";
  * tiga panggilan Gemini yang sudah dibayar, jadi refresh halaman tidak lagi
  * membuang hasil yang sudah didapat.
  */
+const ANALYZE_TIMEOUT_MS = 90_000;
+
 export async function POST(request: Request) {
   const { user, response } = await requireUser();
   if (!user) return response;
@@ -68,6 +70,11 @@ export async function POST(request: Request) {
       headers,
       body: JSON.stringify(parsed.data),
       cache: "no-store",
+      // Analisis sendiri butuh 6 sampai 12 detik, tetapi instance hosting yang
+      // sedang tidur bisa perlu hampir satu menit untuk bangun. Tanpa batas
+      // eksplisit, permintaan pertama setelah masa sepi akan menggantung tanpa
+      // akhir dan terbaca sebagai aplikasi rusak.
+      signal: AbortSignal.timeout(ANALYZE_TIMEOUT_MS),
     });
   } catch (error) {
     console.error("Tidak bisa menghubungi backend analisis", error);

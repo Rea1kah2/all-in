@@ -4,10 +4,31 @@ import { NextResponse } from "next/server";
 import { env } from "@/config/env";
 import { popularTickers } from "@/config/tickers";
 import { requireUser } from "@/lib/require-user";
-import { fetchYahooQuote } from "@/lib/yahoo";
+import { fetchYahooProfile, fetchYahooQuote } from "@/lib/yahoo";
 import type { AddWatchlistInput, WatchlistItem } from "@/types/watchlist";
 
 const nameByTicker = new Map(popularTickers.map((item) => [item.ticker, item.name]));
+
+function toItem(
+  row: typeof schema.watchlist.$inferSelect,
+  quote: Awaited<ReturnType<typeof fetchYahooQuote>>,
+): WatchlistItem {
+  return {
+    id: row.id,
+    ticker: row.ticker,
+    name: row.name ?? nameByTicker.get(row.ticker) ?? row.ticker,
+    price: {
+      current: quote.price,
+      change: quote.change,
+      changePercent: quote.changePercent,
+      currency: quote.currency,
+    },
+    recommendation: (row.recommendation as WatchlistItem["recommendation"]) ?? null,
+    confidence: row.confidence,
+    addedAt: row.addedAt.toISOString(),
+    spark: quote.spark,
+  };
+}
 
 /**
  * Harga diambil langsung dari Yahoo saat dibaca, bukan disimpan di database.
@@ -18,25 +39,10 @@ async function enrich(
   row: typeof schema.watchlist.$inferSelect,
 ): Promise<WatchlistItem | null> {
   try {
-    const quote = await fetchYahooQuote(row.ticker);
-    return {
-      id: row.id,
-      ticker: row.ticker,
-      name: nameByTicker.get(row.ticker) ?? row.ticker,
-      price: {
-        current: quote.price,
-        change: quote.change,
-        changePercent: quote.changePercent,
-        currency: quote.currency,
-      },
-      recommendation: (row.recommendation as WatchlistItem["recommendation"]) ?? null,
-      confidence: row.confidence,
-      addedAt: row.addedAt.toISOString(),
-      spark: quote.spark,
-    };
+    return toItem(row, await fetchYahooQuote(row.ticker));
   } catch (error) {
-    // Satu ticker yang gagal (mis. delisted) tidak boleh menjatuhkan seluruh
-    // daftar punya pengguna.
+    // Satu ticker yang gagal (mis. baru delisted) tidak boleh menjatuhkan
+    // seluruh daftar punya pengguna.
     console.error(`Gagal mengambil harga watchlist untuk ${row.ticker}`, error);
     return null;
   }
@@ -71,19 +77,39 @@ export async function POST(request: Request) {
   }
 
   const ticker = body.ticker.trim().toUpperCase();
-  const db = getDb(env.DATABASE_URL);
 
-  const [row] = await db
+  // Ticker dibuktikan ada di Yahoo **sebelum** disimpan. Kalau urutannya
+  // terbalik, ticker karangan tetap masuk database lalu disaring keluar oleh
+  // GET, menjadi baris sampah yang tidak terlihat dan tidak bisa dihapus dari UI.
+  let quote: Awaited<ReturnType<typeof fetchYahooQuote>>;
+  try {
+    quote = await fetchYahooQuote(ticker);
+  } catch {
+    return NextResponse.json(
+      { message: `Saham ${ticker} tidak ditemukan` },
+      { status: 404 },
+    );
+  }
+
+  // Nama diambil sekali di sini saja. Gagal mengambilnya bukan alasan menolak
+  // penambahan, karena harga sudah terbukti ada, jadi cukup jatuh ke ticker.
+  const name = await fetchYahooProfile(ticker)
+    .then((profile) => profile.name)
+    .catch(() => null);
+
+  const [row] = await getDb(env.DATABASE_URL)
     .insert(schema.watchlist)
     .values({
       userId: user.id,
       ticker,
+      name,
       recommendation: body.recommendation ?? null,
       confidence: body.confidence ?? null,
     })
     .onConflictDoUpdate({
       target: [schema.watchlist.userId, schema.watchlist.ticker],
       set: {
+        name,
         recommendation: body.recommendation ?? null,
         confidence: body.confidence ?? null,
       },
@@ -97,13 +123,5 @@ export async function POST(request: Request) {
     );
   }
 
-  const item = await enrich(row);
-  if (!item) {
-    return NextResponse.json(
-      { message: `Saham ${ticker} tidak ditemukan` },
-      { status: 404 },
-    );
-  }
-
-  return NextResponse.json(item);
+  return NextResponse.json(toItem(row, quote));
 }

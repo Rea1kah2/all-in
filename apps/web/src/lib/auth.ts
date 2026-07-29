@@ -14,6 +14,12 @@ function buildAuth() {
 
   return betterAuth({
     secret: env.BETTER_AUTH_SECRET,
+    // Tanpa baseURL, origin diturunkan dari request. Di belakang proxy Vercel
+    // hasilnya bisa salah, dan pemeriksaan origin better-auth akan menolak
+    // permintaan yang sah. Di lokal boleh kosong, di produksi wajib.
+    ...(env.BETTER_AUTH_URL
+      ? { baseURL: env.BETTER_AUTH_URL, trustedOrigins: [env.BETTER_AUTH_URL] }
+      : {}),
     database: drizzleAdapter(getDb(env.DATABASE_URL), {
       provider: "pg",
       schema,

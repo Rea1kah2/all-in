@@ -16,6 +16,12 @@ const envSchema = z.object({
   BACKEND_SHARED_SECRET: z.string().default(""),
   ANALYSIS_CACHE_TTL_MS: z.coerce.number().int().nonnegative().default(600_000),
   RATE_LIMIT_PER_MINUTE: z.coerce.number().int().positive().default(5),
+  /**
+   * Arahkan ke disk persisten saat deploy, supaya penghitung kuota harian dan
+   * cache analisis tidak ter-reset tiap restart. Kosong berarti memakai
+   * `.cache` di dalam folder aplikasi.
+   */
+  CACHE_DIR: z.string().default(""),
 });
 
 const parsed = envSchema.safeParse(process.env);
