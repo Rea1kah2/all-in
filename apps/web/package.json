@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@all-in/analysis-engine": "workspace:*",
     "@all-in/contracts": "workspace:*",
     "@all-in/db": "workspace:*",
     "@hookform/resolvers": "^5.4.0",

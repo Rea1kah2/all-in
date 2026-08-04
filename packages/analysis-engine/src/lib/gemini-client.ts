@@ -1,19 +1,14 @@
-import { join } from "node:path";
 import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { z } from "zod";
 import { env, geminiModelChain } from "./env.ts";
 import { aiQuotaExceeded, aiUnavailable, modelOverloaded } from "./errors.ts";
 import { GeminiBudget } from "./gemini-budget.ts";
-import { cacheDir } from "./paths.ts";
 
 const client = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
 const REQUEST_TIMEOUT_MS = 30_000;
 
-export const geminiBudget = new GeminiBudget(
-  env.GEMINI_DAILY_CALL_LIMIT,
-  join(cacheDir, "gemini-budget.json"),
-);
+export const geminiBudget = new GeminiBudget(env.GEMINI_DAILY_CALL_LIMIT);
 
 function toGeminiSchema(schema: z.ZodType): Record<string, unknown> {
   const jsonSchema = z.toJSONSchema(schema) as Record<string, unknown>;
@@ -62,11 +57,11 @@ function isOverloadedError(error: unknown): boolean {
   return status === 503 || status === 504;
 }
 
-function logUsage(
+async function logUsage(
   model: string,
   label: string,
   response: { usageMetadata?: unknown },
-): void {
+): Promise<void> {
   const usage = response.usageMetadata as
     | {
         promptTokenCount?: number;
@@ -78,10 +73,11 @@ function logUsage(
 
   if (!usage) return;
 
+  const remaining = await geminiBudget.remaining(model);
   console.warn(
     `Gemini usage ${label} model=${model} prompt=${usage.promptTokenCount ?? 0} ` +
       `output=${usage.candidatesTokenCount ?? 0} thoughts=${usage.thoughtsTokenCount ?? 0} ` +
-      `total=${usage.totalTokenCount ?? 0} sisa=${geminiBudget.remaining(model)}`,
+      `total=${usage.totalTokenCount ?? 0} sisa=${remaining}`,
   );
 }
 
@@ -111,6 +107,10 @@ type AskOptions = {
  * penolakan pertama lalu berhenti mengirimkannya untuk model itu. Ini penting
  * karena mengganti model lewat env adalah jalan keluar saat satu keluarga
  * sedang bermasalah, dan jalan keluar itu tidak boleh ikut rusak.
+ *
+ * Catatan untuk deploy serverless: set ini hidup selama instance hangat saja,
+ * tidak lintas instance. Itu tidak masalah, hanya berarti penghematan satu
+ * percobaan ekstra tidak selalu kena, bukan soal kebenaran.
  */
 const thinkingUnsupported = new Set<string>();
 
@@ -127,7 +127,7 @@ async function generateOnce<T>(
   userPrompt: string,
   options: AskOptions,
 ): Promise<T> {
-  if (!geminiBudget.hasRoom(model)) {
+  if (!(await geminiBudget.hasRoom(model))) {
     console.warn(`Jatah harian ${model} habis, panggilan tidak dikirim`);
     throw aiQuotaExceeded();
   }
@@ -135,7 +135,7 @@ async function generateOnce<T>(
   let text: string | undefined;
 
   // Dicatat sebelum dikirim, karena percobaan yang gagal pun ikut dihitung Google.
-  geminiBudget.record(model);
+  await geminiBudget.record(model);
 
   const send = (withThinking: boolean) =>
     client.models.generateContent({
@@ -167,10 +167,10 @@ async function generateOnce<T>(
         `Model ${model} tidak menerima thinkingConfig, dikirim ulang tanpa itu`,
       );
       thinkingUnsupported.add(model);
-      geminiBudget.record(model);
+      await geminiBudget.record(model);
       response = await send(false);
     }
-    logUsage(model, options.label ?? "agent", response);
+    await logUsage(model, options.label ?? "agent", response);
     text = response.text;
   } catch (error) {
     if (isQuotaError(error)) {

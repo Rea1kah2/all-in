@@ -5,16 +5,9 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     /**
-     * Alamat backend AI Analysis, sengaja tanpa awalan NEXT_PUBLIC supaya tidak
-     * pernah ikut ke bundel klien. Browser memanggil Route Handler di sini, dan
-     * Route Handler itu yang meneruskan ke backend.
-     */
-    ANALYSIS_API_URL: z.string().url().optional(),
-    /** Secret bersama antara Route Handler dan backend. Backend menolak tanpa ini. */
-    BACKEND_SHARED_SECRET: z.string().optional(),
-    /**
      * Koneksi Postgres untuk data pengguna (auth, watchlist, alert, riwayat
-     * analisis, notifikasi). Opsional di level skema supaya `pnpm dev` tetap
+     * analisis, notifikasi) dan sekarang juga penghitung kuota Gemini plus
+     * cache hasil analisis. Opsional di level skema supaya `pnpm dev` tetap
      * bisa jalan sebelum database disiapkan, fitur yang membutuhkannya gagal
      * dengan pesan jelas, bukan membuat seluruh aplikasi tidak bisa start.
      */
@@ -29,13 +22,13 @@ export const env = createEnv({
      */
     BETTER_AUTH_URL: z.string().url().optional(),
   },
-  // Tidak ada lagi variabel klien. Semua permintaan menuju Route Handler di
-  // origin yang sama, jadi browser tidak perlu tahu alamat apa pun.
+  // Tidak ada variabel klien. Semua permintaan menuju Route Handler di origin
+  // yang sama, jadi browser tidak perlu tahu alamat apa pun. Env untuk mesin
+  // analisis (GEMINI_API_KEY dst) divalidasi terpisah di
+  // packages/analysis-engine/src/lib/env.ts, tidak lewat berkas ini.
   client: {},
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    ANALYSIS_API_URL: process.env.ANALYSIS_API_URL,
-    BACKEND_SHARED_SECRET: process.env.BACKEND_SHARED_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,

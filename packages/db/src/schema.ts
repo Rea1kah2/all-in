@@ -4,6 +4,7 @@ import {
   integer,
   jsonb,
   pgTable,
+  primaryKey,
   real,
   text,
   timestamp,
@@ -136,6 +137,35 @@ export const analysis = pgTable(
     index("analysis_user_ticker_idx").on(table.userId, table.ticker),
   ],
 );
+
+/**
+ * Penghitung panggilan Gemini per model per tanggal Pacific. Menggantikan
+ * berkas `.cache/gemini-budget.json` yang dipakai backend Express sebelumnya,
+ * karena fungsi serverless tidak punya disk yang bertahan antar permintaan.
+ * Reset tanggal terjadi otomatis lewat WHERE saat query, bukan lewat job
+ * terjadwal, supaya tidak butuh proses latar belakang tambahan.
+ */
+export const geminiBudget = pgTable(
+  "gemini_budget",
+  {
+    model: text("model").notNull(),
+    pacificDate: text("pacific_date").notNull(),
+    count: integer("count").notNull().default(0),
+  },
+  (table) => [primaryKey({ columns: [table.model, table.pacificDate] })],
+);
+
+/**
+ * Cache hasil analisis lengkap, kunci mengikuti ticker, profil risiko, horizon,
+ * bahasa, dan model, sama seperti TtlCache berbasis berkas sebelumnya. Ini yang
+ * membuat permintaan identik dalam jendela waktu singkat tidak memanggil Gemini
+ * ulang, penting karena satu analisis memakai tiga panggilan berbayar.
+ */
+export const analysisCache = pgTable("analysis_cache", {
+  cacheKey: text("cache_key").primaryKey(),
+  payload: jsonb("payload").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
 
 export const notification = pgTable(
   "notification",

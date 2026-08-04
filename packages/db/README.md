@@ -1,8 +1,8 @@
 # @all-in/db
 
 Skema Drizzle dan klien Postgres untuk data pengguna (auth, watchlist, price alert,
-riwayat analisis, notifikasi). Dipakai oleh `apps/web`, bukan oleh `apps/backend`
-(backend AI Analysis tidak menyimpan apa pun soal pengguna).
+riwayat analisis, notifikasi), plus penghitung kuota Gemini harian dan cache hasil analisis.
+Dipakai oleh `apps/web` dan `packages/analysis-engine`.
 
 ## Setup
 
@@ -31,8 +31,10 @@ riwayat analisis) yang gagal dengan pesan jelas, halaman lain tetap normal.
 | `user`, `session`, `account`, `verification` | milik better-auth. `notify_price_alert` dan `notify_news_digest` ditambahkan ke `user` untuk halaman Settings |
 | `watchlist` | ticker yang diikuti pengguna, harga diambil langsung dari Yahoo saat dibaca, bukan disimpan |
 | `price_alert` | target harga per ticker per pengguna |
-| `analysis` | hasil `AnalyzeResponse` utuh dari `apps/backend`, satu baris mewakili tiga panggilan Gemini yang sudah dibayar |
+| `analysis` | hasil `AnalyzeResponse` utuh dari `@all-in/analysis-engine`, satu baris mewakili tiga panggilan Gemini yang sudah dibayar |
 | `notification` | belum ada yang menulis ke tabel ini, endpoint bacanya sudah siap menunggu pekerjaan lanjutan yang menjadwalkan pengecekan alert |
+| `gemini_budget` | penghitung panggilan Gemini per model per tanggal Pacific, menggantikan berkas JSON karena fungsi serverless tidak punya disk yang bertahan antar permintaan |
+| `analysis_cache` | cache hasil analisis per kombinasi ticker, profil risiko, horizon, bahasa, dan model, dengan kedaluwarsa |
 
 ## Kenapa driver TCP biasa, bukan driver serverless Neon
 
