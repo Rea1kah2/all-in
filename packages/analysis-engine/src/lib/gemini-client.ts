@@ -1,14 +1,29 @@
 import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { z } from "zod";
-import { env, geminiModelChain } from "./env.ts";
+import { getEnv, getGeminiModelChain } from "./env.ts";
 import { aiQuotaExceeded, aiUnavailable, modelOverloaded } from "./errors.ts";
 import { GeminiBudget } from "./gemini-budget.ts";
 
-const client = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
-
 const REQUEST_TIMEOUT_MS = 30_000;
 
-export const geminiBudget = new GeminiBudget(env.GEMINI_DAILY_CALL_LIMIT);
+// Dibuat malas (bukan konstanta modul), sama seperti env: supaya import modul
+// ini tidak butuh GEMINI_API_KEY sudah ada, hanya penggunaan sungguhan yang
+// butuh. Lihat komentar getEnv() di env.ts untuk alasan lengkapnya.
+let clientInstance: GoogleGenAI | null = null;
+function getClient(): GoogleGenAI {
+  if (!clientInstance) {
+    clientInstance = new GoogleGenAI({ apiKey: getEnv().GEMINI_API_KEY });
+  }
+  return clientInstance;
+}
+
+let budgetInstance: GeminiBudget | null = null;
+export function getGeminiBudget(): GeminiBudget {
+  if (!budgetInstance) {
+    budgetInstance = new GeminiBudget(getEnv().GEMINI_DAILY_CALL_LIMIT);
+  }
+  return budgetInstance;
+}
 
 function toGeminiSchema(schema: z.ZodType): Record<string, unknown> {
   const jsonSchema = z.toJSONSchema(schema) as Record<string, unknown>;
@@ -73,7 +88,7 @@ async function logUsage(
 
   if (!usage) return;
 
-  const remaining = await geminiBudget.remaining(model);
+  const remaining = await getGeminiBudget().remaining(model);
   console.warn(
     `Gemini usage ${label} model=${model} prompt=${usage.promptTokenCount ?? 0} ` +
       `output=${usage.candidatesTokenCount ?? 0} thoughts=${usage.thoughtsTokenCount ?? 0} ` +
@@ -127,7 +142,8 @@ async function generateOnce<T>(
   userPrompt: string,
   options: AskOptions,
 ): Promise<T> {
-  if (!(await geminiBudget.hasRoom(model))) {
+  const budget = getGeminiBudget();
+  if (!(await budget.hasRoom(model))) {
     console.warn(`Jatah harian ${model} habis, panggilan tidak dikirim`);
     throw aiQuotaExceeded();
   }
@@ -135,10 +151,10 @@ async function generateOnce<T>(
   let text: string | undefined;
 
   // Dicatat sebelum dikirim, karena percobaan yang gagal pun ikut dihitung Google.
-  await geminiBudget.record(model);
+  await budget.record(model);
 
   const send = (withThinking: boolean) =>
-    client.models.generateContent({
+    getClient().models.generateContent({
       model,
       contents: userPrompt,
       config: {
@@ -167,7 +183,7 @@ async function generateOnce<T>(
         `Model ${model} tidak menerima thinkingConfig, dikirim ulang tanpa itu`,
       );
       thinkingUnsupported.add(model);
-      await geminiBudget.record(model);
+      await budget.record(model);
       response = await send(false);
     }
     await logUsage(model, options.label ?? "agent", response);
@@ -207,7 +223,7 @@ export async function askGeminiJson<T>(
 ): Promise<T> {
   let lastRetryable: unknown = null;
 
-  for (const model of geminiModelChain[options.tier ?? "heavy"]) {
+  for (const model of getGeminiModelChain()[options.tier ?? "heavy"]) {
     try {
       return await generateOnce(model, schema, systemPrompt, userPrompt, options);
     } catch (error) {

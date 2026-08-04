@@ -16,16 +16,32 @@ const envSchema = z.object({
   ANALYSIS_CACHE_TTL_MS: z.coerce.number().int().nonnegative().default(600_000),
 });
 
-const parsed = envSchema.safeParse(process.env);
+type Env = z.infer<typeof envSchema>;
 
-if (!parsed.success) {
-  const details = parsed.error.issues
-    .map((issue) => `  ${issue.path.join(".")}: ${issue.message}`)
-    .join("\n");
-  throw new Error(`Konfigurasi environment analysis-engine tidak valid\n${details}`);
+let cached: Env | null = null;
+
+/**
+ * Divalidasi malas (bukan konstanta modul) supaya `next build` tidak gagal.
+ * Next.js memuat setiap Route Handler saat "Collecting page data" untuk
+ * memeriksa metadatanya, terlepas dari apakah rute itu benar benar akan
+ * dipanggil, dan itu terjadi sebelum env produksi tentu tersedia di semua
+ * tahap build. Validasi di sini baru berjalan saat mesin analisis benar benar
+ * dipakai (permintaan pertama), bukan saat modulnya di-import.
+ */
+export function getEnv(): Env {
+  if (cached) return cached;
+
+  const parsed = envSchema.safeParse(process.env);
+  if (!parsed.success) {
+    const details = parsed.error.issues
+      .map((issue) => `  ${issue.path.join(".")}: ${issue.message}`)
+      .join("\n");
+    throw new Error(`Konfigurasi environment analysis-engine tidak valid\n${details}`);
+  }
+
+  cached = parsed.data;
+  return cached;
 }
-
-export const env = parsed.data;
 
 /**
  * Dua tingkat model, dan tiap tingkat memakai yang lain sebagai cadangan.
@@ -39,9 +55,15 @@ function chain(first: string, second: string): string[] {
   return first === second ? [first] : [first, second];
 }
 
-export const geminiModelChain = {
-  heavy: chain(env.GEMINI_MODEL, env.GEMINI_LIGHT_MODEL),
-  light: chain(env.GEMINI_LIGHT_MODEL, env.GEMINI_MODEL),
-};
+export function getGeminiModelChain(): { heavy: string[]; light: string[] } {
+  const env = getEnv();
+  return {
+    heavy: chain(env.GEMINI_MODEL, env.GEMINI_LIGHT_MODEL),
+    light: chain(env.GEMINI_LIGHT_MODEL, env.GEMINI_MODEL),
+  };
+}
 
-export const geminiModels = [...new Set([env.GEMINI_MODEL, env.GEMINI_LIGHT_MODEL])];
+export function getGeminiModels(): string[] {
+  const env = getEnv();
+  return [...new Set([env.GEMINI_MODEL, env.GEMINI_LIGHT_MODEL])];
+}

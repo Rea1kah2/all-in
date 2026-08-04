@@ -1,7 +1,7 @@
 import type { AnalyzeResponse } from "@all-in/contracts";
 import { getDb, schema } from "@all-in/db";
 import { eq, lt } from "drizzle-orm";
-import { env } from "./env.ts";
+import { getEnv } from "./env.ts";
 
 /**
  * Cache hasil analisis di tabel `analysis_cache`, menggantikan `TtlCache`
@@ -11,7 +11,7 @@ import { env } from "./env.ts";
  */
 
 export async function getCachedAnalysis(key: string): Promise<AnalyzeResponse | null> {
-  if (env.ANALYSIS_CACHE_TTL_MS <= 0) return null;
+  if (getEnv().ANALYSIS_CACHE_TTL_MS <= 0) return null;
 
   const db = getDb();
   const [row] = await db
@@ -32,10 +32,11 @@ export async function setCachedAnalysis(
   key: string,
   payload: AnalyzeResponse,
 ): Promise<void> {
-  if (env.ANALYSIS_CACHE_TTL_MS <= 0) return;
+  const ttl = getEnv().ANALYSIS_CACHE_TTL_MS;
+  if (ttl <= 0) return;
 
   const db = getDb();
-  const expiresAt = new Date(Date.now() + env.ANALYSIS_CACHE_TTL_MS);
+  const expiresAt = new Date(Date.now() + ttl);
 
   await db
     .insert(schema.analysisCache)

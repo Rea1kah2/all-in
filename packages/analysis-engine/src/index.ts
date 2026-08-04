@@ -8,8 +8,8 @@ import { runFundamentalAgent } from "./agents/fundamental-agent.ts";
 import { runMarketIntelligenceAgent } from "./agents/market-intelligence-agent.ts";
 import { getCachedAnalysis, setCachedAnalysis } from "./lib/analysis-cache.ts";
 import { collectMarketData } from "./lib/data-collector.ts";
-import { env, geminiModels } from "./lib/env.ts";
-import { geminiBudget } from "./lib/gemini-client.ts";
+import { getEnv, getGeminiModels } from "./lib/env.ts";
+import { getGeminiBudget } from "./lib/gemini-client.ts";
 import { computeTechnicalScore } from "./lib/technical-indicators.ts";
 
 export { ServiceError } from "./lib/errors.ts";
@@ -24,6 +24,7 @@ export async function runAnalysis(
   locale: "id" | "en",
 ): Promise<AnalyzeResponse> {
   const ticker = request.ticker.trim().toUpperCase();
+  const env = getEnv();
 
   // Nama model ikut jadi kunci, kalau tidak hasil dari model lama akan tetap
   // disajikan setelah model diganti lewat env.
@@ -89,16 +90,15 @@ export async function runAnalysis(
 
 /** Dipakai endpoint status untuk menampilkan sisa jatah kuota harian. */
 export async function geminiQuotaSnapshot() {
-  const snapshot = await geminiBudget.snapshot(geminiModels);
+  const models = getGeminiModels();
+  const snapshot = await getGeminiBudget().snapshot(models);
   return {
     pacificDate: snapshot.date,
     dailyLimitPerModel: snapshot.limit,
-    models: geminiModels.map((model) => ({
+    models: models.map((model) => ({
       model,
       used: snapshot.used[model] ?? 0,
       remaining: Math.max(snapshot.limit - (snapshot.used[model] ?? 0), 0),
     })),
   };
 }
-
-export { env as analysisEngineEnv } from "./lib/env.ts";
