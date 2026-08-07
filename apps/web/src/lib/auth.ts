@@ -47,6 +47,20 @@ function buildAuth() {
           type: "boolean",
           defaultValue: true,
         },
+        defaultRiskProfile: {
+          type: "string",
+          defaultValue: "moderate",
+        },
+        defaultInvestmentGoal: {
+          type: "string",
+          defaultValue: "long_term",
+        },
+      },
+      // Menghapus akun harus benar benar mungkin, bukan sekadar berhenti
+      // memakai. Seluruh tabel milik pengguna memakai onDelete cascade, jadi
+      // barisnya ikut terhapus tanpa pekerjaan pembersihan tambahan.
+      deleteUser: {
+        enabled: true,
       },
     },
     plugins: [nextCookies()],

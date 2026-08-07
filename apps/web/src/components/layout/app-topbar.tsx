@@ -8,6 +8,7 @@ import { LogoutButton } from "@/components/layout/logout-button";
 import { UserMenu } from "@/components/layout/user-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { site } from "@/config/site";
 import { LocaleToggle } from "@/features/i18n/locale-toggle";
 import { NotificationBell } from "@/features/notifications/notification-bell";
 
@@ -28,14 +29,27 @@ export function AppTopbar({ onToggleSidebar }: { onToggleSidebar: () => void }) 
             <MenuIcon size={20} />
           </Button>
 
-          <Link href="/home" className="flex items-center gap-2.5">
-            <span className="size-2 rounded-full bg-brass" />
-            <span className="text-sm text-ink">Stock AI</span>
+          {/*
+            `shrink-0` dan `whitespace-nowrap` mencegah nama brand terpotong
+            menjadi dua baris di layar sempit, yang sempat terjadi karena baris
+            kanan topbar penuh oleh status pasar dan tombol tombol.
+          */}
+          <Link href="/home" className="flex shrink-0 items-center gap-2.5">
+            <span className="size-2 shrink-0 rounded-full bg-brass" />
+            <span className="whitespace-nowrap text-sm text-ink">{site.name}</span>
           </Link>
         </div>
 
         <div className="flex items-center gap-2.5">
-          <MarketStatus />
+          {/*
+            Disembunyikan di ponsel. Badge ini tidak bisa menyusut karena
+            labelnya satu baris, jadi di layar sempit ia mendorong avatar keluar
+            layar. Halaman Home sudah menampilkan status pasar yang sama di
+            bagian Ringkasan pasar, jadi tidak ada informasi yang hilang.
+          */}
+          <div className="hidden sm:flex">
+            <MarketStatus />
+          </div>
           <NotificationBell />
           <ThemeToggle />
           <span className="hidden sm:inline-flex">

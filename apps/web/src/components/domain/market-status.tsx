@@ -29,8 +29,10 @@ export function MarketStatus() {
   }
 
   return (
-    <div className="flex h-8 items-center gap-2 rounded-pill border border-line bg-surface px-3">
-      <span className="relative flex size-2">
+    // `shrink-0` dan `whitespace-nowrap`: tanpa itu label seperti "Pasar Tutup"
+    // pecah menjadi dua baris di layar sempit dan badge ini jadi terlihat rusak.
+    <div className="flex h-8 shrink-0 items-center gap-2 whitespace-nowrap rounded-pill border border-line bg-surface px-3">
+      <span className="relative flex size-2 shrink-0">
         {reading.phase === "open" ? (
           <span className="absolute inline-flex size-full animate-ping rounded-full bg-bull opacity-60" />
         ) : null}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { mainNav } from "@/config/nav";
+import { mobileNav } from "@/config/nav";
 import { cn } from "@/lib/utils";
 
 export function MobileNav() {
@@ -12,7 +12,7 @@ export function MobileNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-line bg-surface md:hidden">
-      {mainNav.map(({ href, key, Icon }) => {
+      {mobileNav.map(({ href, key, Icon }) => {
         const active = pathname === href || pathname.startsWith(`${href}/`);
         return (
           <Link

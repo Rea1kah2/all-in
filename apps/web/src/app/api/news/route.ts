@@ -14,6 +14,7 @@ export async function GET(request: Request) {
       url: headline.url,
       publishedAt: headline.publishedAt,
       tickers: headline.tickers,
+      image: headline.image,
     }));
     return NextResponse.json(items);
   } catch (error) {

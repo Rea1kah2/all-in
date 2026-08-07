@@ -8,8 +8,10 @@ const LEGACY_SESSION_COOKIES = ["laravel_session", "mock_session"];
 const protectedPrefixes = [
   "/home",
   "/analysis",
+  "/history",
   "/companies",
   "/watchlist",
+  "/profile",
   "/settings",
   "/news",
 ];

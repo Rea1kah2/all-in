@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
-import { BookIcon, BulbIcon, CandlestickIcon } from "@/components/icons";
+import { ArrowLeftIcon, BookIcon, BulbIcon, CandlestickIcon } from "@/components/icons";
 import { site } from "@/config/site";
 import { LocaleToggle } from "@/features/i18n/locale-toggle";
 
 export default async function AuthLayout({ children }: { children: ReactNode }) {
   const t = await getTranslations("authPanel");
+  const tAuth = await getTranslations("auth");
 
   const points = [
     { Icon: BulbIcon, title: t("reasoningTitle"), body: t("reasoningBody") },
@@ -47,14 +48,23 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
       </aside>
 
       <main className="flex flex-col items-center justify-center px-5 py-10">
-        <div className="flex w-full max-w-sm items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 lg:hidden">
-            <span className="size-2 rounded-full bg-brass" />
-            <span className="text-sm text-ink">{site.name}</span>
+        <div className="flex w-full max-w-sm items-center justify-between gap-3">
+          {/*
+            Satu elemen yang melakukan dua hal: panah menjadikannya jalan keluar
+            yang jelas ke beranda, nama brand menjaga identitas di layar kecil
+            tempat panel kiri disembunyikan. Sebelumnya di sini hanya ada logo,
+            dan di desktop logo itu ikut hilang sehingga tidak ada jalan kembali
+            sama sekali.
+          */}
+          <Link
+            href="/"
+            aria-label={tAuth("backHome")}
+            className="flex items-center gap-2 rounded-badge py-1.5 pr-3 text-sm text-ink-muted transition-colors hover:text-ink"
+          >
+            <ArrowLeftIcon size={16} />
+            <span className="text-ink">{site.name}</span>
           </Link>
-          <div className="ml-auto">
-            <LocaleToggle />
-          </div>
+          <LocaleToggle />
         </div>
 
         <div className="mt-8 w-full max-w-sm rounded-card border border-line bg-surface p-7">

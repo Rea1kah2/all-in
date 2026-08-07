@@ -112,6 +112,15 @@ export function ArrowRightIcon(props: IconProps) {
   );
 }
 
+export function ArrowLeftIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M19 12H5" />
+      <path d="M11 6 5 12 11 18" />
+    </Icon>
+  );
+}
+
 export function TrendingUpIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -201,6 +210,28 @@ export function GridIcon(props: IconProps) {
       <rect x="14" y="3" width="7" height="7" rx="1" />
       <rect x="3" y="14" width="7" height="7" rx="1" />
       <rect x="14" y="14" width="7" height="7" rx="1" />
+    </Icon>
+  );
+}
+
+export function ListIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M9 6h11" />
+      <path d="M9 12h11" />
+      <path d="M9 18h11" />
+      <path d="M4.5 6h.01" />
+      <path d="M4.5 12h.01" />
+      <path d="M4.5 18h.01" />
+    </Icon>
+  );
+}
+
+export function LockIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <rect x="4" y="10" width="16" height="11" rx="2" />
+      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
     </Icon>
   );
 }

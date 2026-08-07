@@ -14,7 +14,7 @@ import { type UpdateProfileInput, updateProfileSchema } from "@/types/auth";
 export function ProfileForm() {
   const { data: user } = useSession();
   const updateUser = useUpdateUser();
-  const t = useTranslations("settings");
+  const t = useTranslations("common");
   const tAuth = useTranslations("auth");
   const [saved, setSaved] = useState(false);
 
@@ -29,9 +29,17 @@ export function ProfileForm() {
     defaultValues: { name: user?.name ?? "", email: user?.email ?? "" },
   });
 
+  // Bergantung pada nilai primitifnya, bukan objek `user`. Objek sesi dibuat
+  // ulang tiap kali better-auth memancarkan perubahan, jadi memakainya sebagai
+  // dependency membuat efek ini berjalan di tiap render, dan karena `reset()`
+  // sendiri memicu render, hasilnya "Maximum update depth exceeded". Sudah
+  // terlihat langsung di halaman profil sebelum diperbaiki.
+  const name = user?.name;
+  const email = user?.email;
+
   useEffect(() => {
-    if (user) reset({ name: user.name, email: user.email });
-  }, [user, reset]);
+    if (name !== undefined && email !== undefined) reset({ name, email });
+  }, [name, email, reset]);
 
   const onSubmit = handleSubmit((values) => {
     setSaved(false);

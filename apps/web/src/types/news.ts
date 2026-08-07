@@ -12,6 +12,8 @@ export const newsItemSchema = z.object({
   url: z.string(),
   publishedAt: z.string(),
   tickers: z.array(z.string()),
+  /** Gambar dari Yahoo, boleh kosong. UI jatuh ke placeholder ikon. */
+  image: z.string().nullable(),
 });
 
 export type NewsItem = z.infer<typeof newsItemSchema>;

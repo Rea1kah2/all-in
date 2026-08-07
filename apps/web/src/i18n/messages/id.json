@@ -31,6 +31,14 @@
     "learn": {
       "label": "Learn",
       "short": "Learn"
+    },
+    "history": {
+      "label": "Riwayat",
+      "short": "Riwayat"
+    },
+    "news": {
+      "label": "Berita",
+      "short": "Berita"
     }
   },
   "app": {
@@ -72,7 +80,11 @@
     "watchlist": "Watchlist",
     "seeAll": "Lihat semua",
     "watchlistError": "Watchlist gagal dimuat, coba lagi",
-    "watchlistEmpty": "Belum ada saham yang dipantau. Simpan dari halaman perusahaan."
+    "watchlistEmpty": "Belum ada saham yang dipantau. Simpan dari halaman perusahaan.",
+    "lastAnalysis": "Analisis terakhir",
+    "noAnalysisYet": "Mulai analisis pertama",
+    "trackedStocks": "Saham dipantau",
+    "totalAnalyses": "Total analisis"
   },
   "companies": {
     "title": "Company Explorer",
@@ -185,7 +197,7 @@
     "save": "Simpan ke Watchlist",
     "saved": "Tersimpan ke Watchlist",
     "saveError": "Gagal menyimpan ke watchlist, coba lagi",
-    "disclaimer": "Analisis ini membantu Anda berpikir lebih jernih. Keputusan investasi akhir tetap milik Anda, dan Stock AI bukan penasihat investasi berlisensi."
+    "disclaimer": "Analisis ini membantu Anda berpikir lebih jernih. Keputusan investasi akhir tetap milik Anda, dan {name} bukan penasihat investasi berlisensi."
   },
   "auth": {
     "loginTitle": "Masuk",
@@ -204,7 +216,8 @@
     "noAccount": "Belum punya akun?",
     "haveAccount": "Sudah punya akun?",
     "toRegister": "Coba gratis",
-    "toLogin": "Masuk"
+    "toLogin": "Masuk",
+    "backHome": "Kembali ke beranda"
   },
   "showcase": {
     "title": "Design token dan primitive",
@@ -327,15 +340,13 @@
   },
   "settings": {
     "title": "Pengaturan",
-    "subtitle": "Kelola preferensi notifikasi untuk akun Anda.",
-    "profileTitle": "Profil",
-    "profileSubtitle": "Perbarui nama dan email yang terhubung dengan akun Anda.",
-    "save": "Simpan",
-    "saved": "Tersimpan",
+    "subtitle": "Preferensi sistem, notifikasi, dan keamanan akun Anda.",
     "notifyPriceAlert": "Notifikasi alert harga",
     "notifyPriceAlertHint": "Dapatkan notifikasi saat saham di watchlist Anda mencapai target harga.",
     "notifyNewsDigest": "Notifikasi berita",
-    "notifyNewsDigestHint": "Dapatkan notifikasi saat ada berita baru terkait saham di watchlist Anda."
+    "notifyNewsDigestHint": "Dapatkan notifikasi saat ada berita baru terkait saham di watchlist Anda.",
+    "notificationsTitle": "Notifikasi",
+    "notificationsSubtitle": "Pilih kabar apa saja yang ingin Anda terima."
   },
   "watchlistStar": {
     "save": "Simpan",
@@ -385,5 +396,66 @@
     "conditionBelow": "turun ke atau di bawah",
     "analysisDone": "Analisis AI untuk {ticker} selesai, rekomendasi {recommendation}",
     "news": "Berita baru terkait {ticker}"
+  },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Identitas Anda di {name}, foto, nama, dan email.",
+    "photoTitle": "Foto profil",
+    "uploadPhoto": "Unggah foto",
+    "changePhoto": "Ganti foto",
+    "removePhoto": "Hapus foto",
+    "photoHint": "JPG, PNG, WebP, atau GIF. Maksimal 2 MB.",
+    "uploadFailed": "Gagal mengunggah foto, coba lagi",
+    "identityTitle": "Identitas",
+    "statsTitle": "Ringkasan akun",
+    "stats": {
+      "analyses": "Analisis dijalankan",
+      "watchlist": "Saham dipantau",
+      "alerts": "Alert aktif"
+    },
+    "joinedAt": "Bergabung sejak {date}"
+  },
+  "security": {
+    "title": "Keamanan",
+    "subtitle": "Kata sandi dan akses akun Anda.",
+    "changePassword": "Ganti kata sandi",
+    "currentPassword": "Kata sandi saat ini",
+    "newPassword": "Kata sandi baru",
+    "confirmPassword": "Konfirmasi kata sandi baru",
+    "passwordChanged": "Kata sandi berhasil diganti",
+    "passwordNote": "Setelah diganti, sesi di perangkat lain akan dikeluarkan.",
+    "dangerTitle": "Hapus akun",
+    "dangerBody": "Menghapus akun akan menghapus seluruh watchlist, alert, dan riwayat analisis Anda secara permanen. Tindakan ini tidak bisa dibatalkan.",
+    "deleteAccount": "Hapus akun saya",
+    "deleteConfirmTitle": "Hapus akun secara permanen?",
+    "deleteConfirmBody": "Seluruh data Anda akan hilang dan tidak bisa dipulihkan. Masukkan kata sandi untuk melanjutkan.",
+    "deleteConfirm": "Ya, hapus akun saya",
+    "passwordRequired": "Masukkan kata sandi Anda"
+  },
+  "analysisDefaults": {
+    "title": "Default analisis",
+    "subtitle": "Nilai awal yang dipakai setiap kali Anda membuka halaman analisis."
+  },
+  "history": {
+    "title": "Riwayat analisis",
+    "subtitle": "Semua analisis yang pernah Anda jalankan, bisa dibuka lagi tanpa memakai kuota.",
+    "empty": "Belum ada analisis",
+    "emptyBody": "Analisis yang Anda jalankan akan tersimpan di sini, lengkap dengan seluruh alur penalarannya.",
+    "startAnalysis": "Mulai analisis pertama",
+    "error": "Riwayat gagal dimuat, coba lagi",
+    "back": "Kembali ke riwayat",
+    "reanalyze": "Analisis ulang",
+    "noCost": "Dibuka dari riwayat, tidak memakai kuota"
+  },
+  "newsPage": {
+    "title": "Berita",
+    "subtitle": "Berita pasar terbaru dari Yahoo Finance, menautkan ke sumber aslinya.",
+    "empty": "Berita belum tersedia",
+    "emptyBody": "Coba lagi sebentar lagi.",
+    "error": "Berita gagal dimuat, coba lagi"
+  },
+  "common": {
+    "save": "Simpan",
+    "saved": "Tersimpan"
   }
 }

@@ -31,6 +31,14 @@
     "learn": {
       "label": "Learn",
       "short": "Learn"
+    },
+    "history": {
+      "label": "History",
+      "short": "History"
+    },
+    "news": {
+      "label": "News",
+      "short": "News"
     }
   },
   "app": {
@@ -72,7 +80,11 @@
     "watchlist": "Watchlist",
     "seeAll": "See all",
     "watchlistError": "Watchlist failed to load, try again",
-    "watchlistEmpty": "No stocks tracked yet. Save one from a company page."
+    "watchlistEmpty": "No stocks tracked yet. Save one from a company page.",
+    "lastAnalysis": "Last analysis",
+    "noAnalysisYet": "Run your first analysis",
+    "trackedStocks": "Stocks tracked",
+    "totalAnalyses": "Total analyses"
   },
   "companies": {
     "title": "Company Explorer",
@@ -185,7 +197,7 @@
     "save": "Save to Watchlist",
     "saved": "Saved to Watchlist",
     "saveError": "Could not save to watchlist, try again",
-    "disclaimer": "This analysis helps you think more clearly. The final investment decision remains yours, and Stock AI is not a licensed investment advisor."
+    "disclaimer": "This analysis helps you think more clearly. The final investment decision remains yours, and {name} is not a licensed investment advisor."
   },
   "auth": {
     "loginTitle": "Sign in",
@@ -204,7 +216,8 @@
     "noAccount": "No account yet?",
     "haveAccount": "Already have an account?",
     "toRegister": "Try it free",
-    "toLogin": "Sign in"
+    "toLogin": "Sign in",
+    "backHome": "Back to home"
   },
   "showcase": {
     "title": "Design tokens and primitives",
@@ -327,15 +340,13 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Manage the notification preferences for your account.",
-    "profileTitle": "Profile",
-    "profileSubtitle": "Update the name and email connected to your account.",
-    "save": "Save",
-    "saved": "Saved",
+    "subtitle": "System preferences, notifications, and account security.",
     "notifyPriceAlert": "Price alert notifications",
     "notifyPriceAlertHint": "Get notified when a stock in your watchlist reaches its target price.",
     "notifyNewsDigest": "News notifications",
-    "notifyNewsDigestHint": "Get notified when new articles about a stock in your watchlist are published."
+    "notifyNewsDigestHint": "Get notified when new articles about a stock in your watchlist are published.",
+    "notificationsTitle": "Notifications",
+    "notificationsSubtitle": "Choose which updates you want to receive."
   },
   "watchlistStar": {
     "save": "Save",
@@ -385,5 +396,66 @@
     "conditionBelow": "fell to or below",
     "analysisDone": "AI analysis for {ticker} is ready, recommendation {recommendation}",
     "news": "New article about {ticker}"
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Your identity on {name}: photo, name, and email.",
+    "photoTitle": "Profile photo",
+    "uploadPhoto": "Upload photo",
+    "changePhoto": "Change photo",
+    "removePhoto": "Remove photo",
+    "photoHint": "JPG, PNG, WebP, or GIF. Max 2 MB.",
+    "uploadFailed": "Could not upload the photo, try again",
+    "identityTitle": "Identity",
+    "statsTitle": "Account summary",
+    "stats": {
+      "analyses": "Analyses run",
+      "watchlist": "Stocks tracked",
+      "alerts": "Active alerts"
+    },
+    "joinedAt": "Joined {date}"
+  },
+  "security": {
+    "title": "Security",
+    "subtitle": "Your password and account access.",
+    "changePassword": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "passwordChanged": "Password changed",
+    "passwordNote": "Sessions on other devices will be signed out.",
+    "dangerTitle": "Delete account",
+    "dangerBody": "Deleting your account permanently removes your watchlist, alerts, and analysis history. This cannot be undone.",
+    "deleteAccount": "Delete my account",
+    "deleteConfirmTitle": "Delete account permanently?",
+    "deleteConfirmBody": "All your data will be gone and cannot be recovered. Enter your password to continue.",
+    "deleteConfirm": "Yes, delete my account",
+    "passwordRequired": "Enter your password"
+  },
+  "analysisDefaults": {
+    "title": "Analysis defaults",
+    "subtitle": "The starting values used every time you open the analysis page."
+  },
+  "history": {
+    "title": "Analysis history",
+    "subtitle": "Every analysis you have run, reopenable without spending quota.",
+    "empty": "No analyses yet",
+    "emptyBody": "Analyses you run are saved here, with the full reasoning trail.",
+    "startAnalysis": "Run your first analysis",
+    "error": "History failed to load, try again",
+    "back": "Back to history",
+    "reanalyze": "Re-run analysis",
+    "noCost": "Opened from history, no quota used"
+  },
+  "newsPage": {
+    "title": "News",
+    "subtitle": "Latest market news from Yahoo Finance, linking to the original source.",
+    "empty": "No news yet",
+    "emptyBody": "Try again shortly.",
+    "error": "News failed to load, try again"
+  },
+  "common": {
+    "save": "Save",
+    "saved": "Saved"
   }
 }

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { BulbIcon, CheckIcon, PlusIcon, StarIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { site } from "@/config/site";
 import { MarketSnapshot } from "@/features/analysis/market-snapshot";
 import { ReasoningTrail } from "@/features/analysis/reasoning-trail";
 import { ScoreCards } from "@/features/analysis/score-cards";
@@ -109,7 +110,7 @@ export function AnalysisResult({ result, ticker, companyName, onReset }: Props) 
         className="animate-stagger max-w-xl text-xs leading-relaxed text-ink-faint"
         style={{ animationDelay: "2400ms" }}
       >
-        {t("disclaimer")}
+        {t("disclaimer", { name: site.name })}
       </p>
     </div>
   );

@@ -24,6 +24,13 @@ export const user = pgTable("user", {
   image: text("image"),
   notifyPriceAlert: boolean("notify_price_alert").notNull().default(true),
   notifyNewsDigest: boolean("notify_news_digest").notNull().default(true),
+  /**
+   * Nilai awal formulir analisis. Tanpa ini pengguna harus memilih ulang profil
+   * risiko dan horizon setiap kali menganalisis, padahal keduanya jarang
+   * berubah untuk orang yang sama.
+   */
+  defaultRiskProfile: text("default_risk_profile").notNull().default("moderate"),
+  defaultInvestmentGoal: text("default_investment_goal").notNull().default("long_term"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

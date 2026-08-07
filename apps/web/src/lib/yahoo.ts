@@ -2,9 +2,11 @@ import YahooFinance from "yahoo-finance2";
 
 /**
  * Data pasar langsung dari Yahoo Finance, dipakai untuk indeks, top movers,
- * watchlist, profil perusahaan, dan berita. Ini bukan AI Analysis, jadi sengaja
- * tidak lewat backend Render: halaman perusahaan harus tetap hidup meski
- * layanan analisis sedang tidur.
+ * watchlist, profil perusahaan, dan berita.
+ *
+ * Sengaja terpisah dari `@all-in/analysis-engine`: yang di sini hanya membaca
+ * harga dan profil, tidak memanggil Gemini sama sekali, sehingga halaman
+ * perusahaan dan berita tidak ikut terpengaruh saat jatah analisis harian habis.
  */
 
 const yahooFinance = new YahooFinance({
@@ -183,7 +185,35 @@ export type YahooHeadline = {
   url: string;
   publishedAt: string;
   tickers: string[];
+  /** Gambar dari Yahoo. Kosong berarti UI memakai placeholder ikon. */
+  image: string | null;
 };
+
+type YahooThumbnail = {
+  resolutions?: Array<{ url?: string; width?: number; height?: number }>;
+};
+
+/**
+ * Yahoo memberi beberapa resolusi per gambar, biasanya satu thumbnail 140px dan
+ * satu `original` beberapa ribu piksel. Diambil resolusi terkecil yang masih di
+ * atas 400px, supaya gambarnya tetap tajam di kartu tanpa menarik berkas 2560px
+ * untuk ditampilkan selebar beberapa ratus piksel. Kalau tidak ada yang cukup
+ * besar, dipakai yang terbesar yang tersedia.
+ */
+function pickThumbnail(thumbnail: unknown): string | null {
+  const resolutions = (thumbnail as YahooThumbnail | undefined)?.resolutions;
+  if (!Array.isArray(resolutions) || resolutions.length === 0) return null;
+
+  const usable = resolutions
+    .filter(
+      (entry): entry is { url: string; width: number } =>
+        typeof entry?.url === "string" && typeof entry.width === "number",
+    )
+    .sort((a, b) => a.width - b.width);
+
+  const preferred = usable.find((entry) => entry.width >= 400) ?? usable.at(-1);
+  return preferred?.url ?? null;
+}
 
 const MAX_HEADLINES = 12;
 
@@ -231,6 +261,7 @@ export async function fetchYahooNews(ticker?: string): Promise<YahooHeadline[]> 
           url: item.link,
           publishedAt: new Date(item.providerPublishTime ?? Date.now()).toISOString(),
           tickers,
+          image: pickThumbnail((item as { thumbnail?: unknown }).thumbnail),
         },
       ];
     })

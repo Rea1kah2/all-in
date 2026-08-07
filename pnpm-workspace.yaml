@@ -1,6 +1,13 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# @vercel/blob menarik @vercel/cli-config yang meminta zod 4.1.11, sehingga ada
+# dua salinan zod di pohon dependensi. Akibatnya @hookform/resolvers melihat
+# instance zod yang berbeda dari yang dipakai skema kita, dan setiap
+# zodResolver() gagal typecheck. Satu versi dipaksa untuk seluruh workspace.
+overrides:
+  zod: "^4.4.3"
 allowBuilds:
   '@parcel/watcher': true
   '@swc/core': true

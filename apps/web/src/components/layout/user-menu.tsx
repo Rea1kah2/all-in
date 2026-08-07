@@ -58,7 +58,7 @@ export function UserMenu() {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem asChild>
-            <Link href="/settings/profile">
+            <Link href="/profile">
               <PersonIcon size={16} />
               {t("profile")}
             </Link>
